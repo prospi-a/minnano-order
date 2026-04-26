@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みんなのオーダー</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --gold: #f5a623;
+    --gold2: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --accent: #00d4ff;
+    --accent2: #0099cc;
+    --text: #e8eaf0;
+    --text-dim: #7a8499;
+    --border: #2a3550;
+    --green: #2ed573;
+    --red: #ff4757;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(245,166,35,0.05) 0%, transparent 50%);
+  }
+  header {
+    background: linear-gradient(135deg, #0d1526 0%, #111827 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(245,166,35,0.15);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo span {
+    background: linear-gradient(90deg, var(--accent), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tabs {
+    max-width: 900px;
+    margin: 24px auto 0;
+    padding: 0 20px;
+    display: flex;
+    gap: 8px;
+  }
+  .tab {
+    padding: 10px 22px;
+    border-radius: 8px 8px 0 0;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    transition: all 0.2s;
+    background: var(--surface);
+    color: var(--text-dim);
+  }
+  .tab.active { background: var(--surface2); color: var(--gold); border-color: var(--gold); }
+  main { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+  .panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 0 12px 12px 12px;
+    padding: 24px;
+    display: none;
+  }
+  .panel.active { display: block; }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* POSITION FILTER */
+  .ranking-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+  .position-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pos-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .pos-btn.active, .pos-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  /* RANKING */
+  .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: all 0.2s;
+    animation: fadeIn 0.4s ease both;
+  }
+  .rank-item:hover { border-color: var(--accent); transform: translateX(4px); box-shadow: -4px 0 0 var(--accent); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 26px; width: 36px; text-align: center; flex-shrink: 0; }
+  .rank-1 { color: var(--gold2); text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+  .rank-2 { color: var(--silver); }
+  .rank-3 { color: var(--bronze); }
+  .rank-other { color: var(--text-dim); font-size: 18px; }
+  .rank-info { flex: 1; min-width: 0; }
+  .rank-name { font-size: 15px; font-weight: 900; margin-bottom: 3px; }
+  .rank-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .team-badge {
+    font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700;
+    background: var(--surface2); border: 1px solid var(--border);
+  }
+  .rank-right { text-align: right; flex-shrink: 0; }
+  .rank-count { font-size: 14px; font-weight: 700; color: var(--accent); }
+  .rank-pct { font-size: 11px; color: var(--text-dim); }
+  .rank-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 4px; width: 80px; }
+  .rank-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 40px; color: var(--text-dim); font-size: 14px; }
+
+  /* SUBMIT */
+  .submit-intro {
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(245,166,35,0.05));
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .submit-intro strong { color: var(--accent); }
+  .order-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .order-field { display: flex; flex-direction: column; gap: 5px; }
+  .order-label { font-size: 12px; font-weight: 700; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+  .pos-tag { display: inline-block; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 10px; color: var(--accent); font-weight: 900; }
+  .order-input {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; color: var(--text); font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px; transition: border-color 0.2s; outline: none; width: 100%;
+  }
+  .order-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+  .pitcher-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .pitcher-title { font-size: 13px; font-weight: 700; color: var(--text-dim); margin-bottom: 10px; }
+  .pitcher-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .submit-btn {
+    width: 100%; margin-top: 18px; padding: 14px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #000; font-weight: 900; font-size: 16px; border: none; border-radius: 10px;
+    cursor: pointer; font-family: 'Noto Sans JP', sans-serif; transition: all 0.2s; letter-spacing: 1px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,166,35,0.4); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .success-msg {
+    display: none; background: rgba(46,213,115,0.1); border: 1px solid var(--green);
+    border-radius: 10px; padding: 14px; text-align: center; color: var(--green);
+    font-weight: 700; margin-top: 14px; animation: fadeIn 0.3s ease;
+  }
+  .error-msg {
+    display: none; background: rgba(255,71,87,0.1); border: 1px solid var(--red);
+    border-radius: 10px; padding: 14px; text-align: center; color: var(--red);
+    font-weight: 700; margin-top: 14px;
+  }
+  .panel-footer {
+    margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--text-dim); line-height: 1.8;
+  }
+  @media (max-width: 600px) {
+    .order-grid { grid-template-columns: 1fr; }
+    .pitcher-grid { grid-template-columns: repeat(2, 1fr); }
+    .rank-bar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">みんなの<span>オーダー</span></div>
+    <div style="font-size:11px;color:var(--text-dim)">プロスピA オーダー投稿・ランキング</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('ranking')">📊 ランキング</div>
+  <div class="tab" onclick="switchTab('submit')">➕ オーダー投稿</div>
+</div>
+
+<main>
+
+  <!-- RANKING -->
+  <div class="panel active" id="panel-ranking">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="total-count">-</div>
+        <div class="stat-label">投稿オーダー数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">11</div>
+        <div class="stat-label">対象ポジション</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2026</div>
+        <div class="stat-label">Series1 対応</div>
+      </div>
+    </div>
+
+    <div class="ranking-header">
+      <div class="section-title" id="ranking-title">⚡ 捕手 ランキング</div>
+      <div class="position-filter">
+        <div class="pos-btn active" onclick="changePos('捕手',this)">捕手</div>
+        <div class="pos-btn" onclick="changePos('一塁手',this)">一塁</div>
+        <div class="pos-btn" onclick="changePos('二塁手',this)">二塁</div>
+        <div class="pos-btn" onclick="changePos('三塁手',this)">三塁</div>
+        <div class="pos-btn" onclick="changePos('遊撃手',this)">遊撃</div>
+        <div class="pos-btn" onclick="changePos('左翼手',this)">左翼</div>
+        <div class="pos-btn" onclick="changePos('中堅手',this)">中堅</div>
+        <div class="pos-btn" onclick="changePos('右翼手',this)">右翼</div>
+        <div class="pos-btn" onclick="changePos('先発',this)">先発</div>
+        <div class="pos-btn" onclick="changePos('中継ぎ',this)">中継ぎ</div>
+        <div class="pos-btn" onclick="changePos('抑え',this)">抑え</div>
+      </div>
+    </div>
+
+    <div class="ranking-list" id="ranking-list">
+      <div class="loading"><div class="spinner"></div>読み込み中...</div>
+    </div>
+
+    <div class="panel-footer">
+      ※ 本サイトはファンによる非公式サービスです。データはユーザー投稿に基づきます。<br>
+      プロ野球スピリッツAはKONAMIの登録商標です。
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="panel" id="panel-submit">
+    <div class="submit-intro">
+      <strong>あなたのオーダーを投稿しよう！</strong><br>
+      使っている選手名を入力してください。3ポジション以上入力で投稿できます。
+    </div>
+
+    <div class="order-grid">
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">C</span> 捕手</div>
+        <input class="order-input" type="text" placeholder="例：甲斐拓也" id="f-c">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">1B</span> 一塁手</div>
+        <input class="order-input" type="text" placeholder="例：中田翔" id="f-1b">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">2B</span> 二塁手</div>
+        <input class="order-input" type="text" placeholder="例：山田哲人" id="f-2b">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">3B</span> 三塁手</div>
+        <input class="order-input" type="text" placeholder="例：村上宗隆" id="f-3b">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">SS</span> 遊撃手</div>
+        <input class="order-input" type="text" placeholder="例：源田壮亮" id="f-ss">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">LF</span> 左翼手</div>
+        <input class="order-input" type="text" placeholder="例：近本光司" id="f-lf">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">CF</span> 中堅手</div>
+        <input class="order-input" type="text" placeholder="例：柳田悠岐" id="f-cf">
+      </div>
+      <div class="order-field">
+        <div class="order-label"><span class="pos-tag">RF</span> 右翼手</div>
+        <input class="order-input" type="text" placeholder="例：吉田正尚" id="f-rf">
+      </div>
+    </div>
+
+    <div class="pitcher-section">
+      <div class="pitcher-title">⚾ 投手陣</div>
+      <div class="pitcher-grid">
+        <div class="order-field">
+          <div class="order-label"><span class="pos-tag">SP</span> 先発</div>
+          <input class="order-input" type="text" placeholder="例：山本由伸" id="f-sp">
+        </div>
+        <div class="order-field">
+          <div class="order-label"><span class="pos-tag">RP</span> 中継ぎ</div>
+          <input class="order-input" type="text" placeholder="例：宇田川優希" id="f-rp">
+        </div>
+        <div class="order-field">
+          <div class="order-label"><span class="pos-tag">CL</span> 抑え</div>
+          <input class="order-input" type="text" placeholder="例：栗林良吏" id="f-cl">
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitOrder()">🔥 このオーダーを投稿する</button>
+    <div class="success-msg" id="success-msg">✅ 投稿完了！ランキングに反映されました。</div>
+    <div class="error-msg" id="error-msg">❌ エラーが発生しました。もう一度お試しください。</div>
+
+    <div class="panel-footer">
+      ※ 投稿内容はランキング集計にのみ使用されます。<br>
+      ※ 本サイトはファンによる非公式サービスです。プロ野球スピリッツAはKONAMIの登録商標です。
+    </div>
+  </div>
+
+</main>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ★ ここにfirebaseConfigを貼り付けてください
+  const firebaseConfig = {
+    apiKey: "AIzaSyDBD01gNUkbNCQv4fA5m9Ay9eTiJtn4R-s",
+    authDomain: "minnano-order.firebaseapp.com",
+    projectId: "minnano-order",
+    storageBucket: "minnano-order.firebasestorage.app",
+    messagingSenderId: "793644574986",
+    appId: "1:793644574986:web:3bff3870a333b7fae232f3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const posMap = {
+    '捕手': 'f-c', '一塁手': 'f-1b', '二塁手': 'f-2b', '三塁手': 'f-3b',
+    '遊撃手': 'f-ss', '左翼手': 'f-lf', '中堅手': 'f-cf', '右翼手': 'f-rf',
+    '先発': 'f-sp', '中継ぎ': 'f-rp', '抑え': 'f-cl'
+  };
+
+  let currentPos = '捕手';
+  let totalOrders = 0;
+
+  // ランキング読み込み
+  async function loadRanking(pos) {
+    document.getElementById('ranking-list').innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+    try {
+      const snap = await getDocs(collection(db, 'orders'));
+      const counts = {};
+      totalOrders = snap.size;
+      document.getElementById('total-count').textContent = totalOrders;
+
+      snap.forEach(doc => {
+        const data = doc.data();
+        const player = data[pos];
+        if (player && player.trim() !== '') {
+          const key = player.trim();
+          counts[key] = (counts[key] || 0) + 1;
+        }
+      });
+
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+      if (sorted.length === 0) {
+        document.getElementById('ranking-list').innerHTML = '<div class="empty">まだ投稿がありません。最初のオーダーを投稿してみよう！</div>';
+        return;
+      }
+
+      const maxCount = sorted[0][1];
+      const html = sorted.map(([name, count], i) => {
+        const rank = i + 1;
+        const pct = totalOrders > 0 ? Math.round(count / totalOrders * 100) : 0;
+        const barW = Math.round(count / maxCount * 100);
+        const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
+        return `
+          <div class="rank-item" style="animation-delay:${i*0.05}s">
+            <div class="rank-num ${rankClass}">${rank}</div>
+            <div class="rank-info">
+              <div class="rank-name">${name}</div>
+            </div>
+            <div class="rank-right">
+              <div class="rank-count">${count}人</div>
+              <div class="rank-pct">${pct}%</div>
+              <div class="rank-bar"><div class="rank-bar-fill" style="width:${barW}%"></div></div>
+            </div>
+          </div>`;
+      }).join('');
+      document.getElementById('ranking-list').innerHTML = html;
+    } catch(e) {
+      document.getElementById('ranking-list').innerHTML = '<div class="empty">データの読み込みに失敗しました。</div>';
+    }
+  }
+
+  // ポジション切り替え
+  window.changePos = function(pos, btn) {
+    currentPos = pos;
+    document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('ranking-title').textContent = `⚡ ${pos} ランキング`;
+    loadRanking(pos);
+  };
+
+  // タブ切り替え
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i===0&&tab==='ranking')||(i===1&&tab==='submit'));
+    });
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`panel-${tab}`).classList.add('active');
+  };
+
+  // 投稿
+  window.submitOrder = async function() {
+    const fields = Object.entries(posMap);
+    const data = {};
+    let filled = 0;
+
+    fields.forEach(([pos, id]) => {
+      const val = document.getElementById(id).value.trim();
+      if (val) { data[pos] = val; filled++; }
+    });
+
+    if (filled < 3) {
+      alert('3ポジション以上入力してください');
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = '投稿中...';
+
+    try {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'orders'), data);
+
+      fields.forEach(([, id]) => document.getElementById(id).value = '');
+      document.getElementById('success-msg').style.display = 'block';
+      document.getElementById('error-msg').style.display = 'none';
+      setTimeout(() => { document.getElementById('success-msg').style.display = 'none'; }, 4000);
+    } catch(e) {
+      document.getElementById('error-msg').style.display = 'block';
+      document.getElementById('success-msg').style.display = 'none';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🔥 このオーダーを投稿する';
+  };
+
+  // 初期読み込み
+  loadRanking('捕手');
+</script>
+
+</body>
+</html>
