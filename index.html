@@ -1,15 +1,18 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>みんなのリアタイオーダー | プロスピA</title>
+<!-- Google Analytics（G-XXXXXXXXXXをあなたのIDに差し替えてください） -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #f5f6fa;
   --white: #ffffff;
-  --surface: #ffffff;
   --surface2: #f8f9fc;
   --orange: #f97316;
   --orange2: #fb923c;
@@ -23,414 +26,317 @@
   --border2: #cbd5e1;
   --green: #10b981;
   --red: #ef4444;
-  --blue: #3b82f6;
   --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.04);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html { font-size:16px; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-  padding-bottom: 80px;
-}
+body { background:var(--bg); color:var(--text); font-family:'Noto Sans JP',sans-serif; min-height:100vh; overflow-x:hidden; padding-bottom:80px; }
+
+/* ランクバッジ */
+.rank-s { background:#fef3c7; border:1.5px solid #f59e0b; color:#b45309; font-weight:900; }
+.rank-a { background:#fee2e2; border:1.5px solid #ef4444; color:#b91c1c; font-weight:900; }
+.rank-b { background:#dbeafe; border:1.5px solid #3b82f6; color:#1d4ed8; font-weight:900; }
+.rank-c { background:#dcfce7; border:1.5px solid #22c55e; color:#15803d; font-weight:900; }
+.rank-d { background:#f1f5f9; border:1.5px solid #475569; color:#1e293b; font-weight:900; }
+
+/* 弾道バッジ */
+.trajectory-archist { background:#f3e8ff; border:1.5px solid #a855f7; color:#7e22ce; font-weight:900; }
+.trajectory-power { background:#fee2e2; border:1.5px solid #ef4444; color:#b91c1c; font-weight:900; }
+.trajectory-high { background:#fff7ed; border:1.5px solid #f97316; color:#c2410c; font-weight:900; }
+.trajectory-mid { background:#fefce8; border:1.5px solid #eab308; color:#a16207; font-weight:900; }
+.trajectory-line { background:#dcfce7; border:1.5px solid #22c55e; color:#15803d; font-weight:900; }
+.trajectory-low { background:#dbeafe; border:1.5px solid #3b82f6; color:#1d4ed8; font-weight:900; }
 
 /* HEADER */
-header {
-  position: sticky; top:0; z-index:100;
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 16px; height: 56px;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: var(--shadow);
-}
-.logo {
-  display: flex; align-items: center; gap: 6px;
-}
-.logo-icon { font-size: 22px; }
-.logo-text {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 16px; font-weight: 900;
-  color: var(--text); letter-spacing: -0.3px;
-}
-.logo-text span { color: var(--orange); }
+header { position:sticky; top:0; z-index:100; background:var(–white); border-bottom:1px solid var(–border); padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(–shadow); }
+.logo { display:flex; align-items:center; gap:6px; }
+.logo-icon { font-size:22px; }
+.logo-text { font-family:‘Montserrat’,sans-serif; font-size:15px; font-weight:900; color:var(–text); }
+.logo-text span { color:var(–orange); }
 .header-right { display:flex; align-items:center; gap:8px; }
-.user-chip {
-  display:none; align-items:center; gap:6px;
-  background: var(--orange-light); border:1px solid rgba(249,115,22,0.2);
-  border-radius:16px; padding:4px 10px 4px 8px;
-}
-.user-dot { width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
-.user-name { font-size:12px; color:var(--orange-dark); font-weight:700; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.btn {
-  padding:8px 16px; border-radius:10px; font-size:13px; font-weight:700;
-  cursor:pointer; border:none; font-family:'Noto Sans JP',sans-serif;
-  transition:all 0.2s; min-height:40px; letter-spacing:0.3px;
-}
-.btn-primary {
-  background: linear-gradient(135deg, var(--orange), var(--orange2));
-  color: #fff; box-shadow: 0 2px 8px rgba(249,115,22,0.3);
-}
-.btn-primary:active { transform:scale(0.97); opacity:0.9; }
-.btn-ghost { background:transparent; color:var(--text-mid); border:1px solid var(--border2); }
-.btn-ghost:active { background:var(--surface2); }
-.btn-outline-orange { background:transparent; border:2px solid var(--orange); color:var(--orange); font-weight:700; }
+.user-chip { display:none; align-items:center; gap:6px; background:var(–orange-light); border:1px solid rgba(249,115,22,0.2); border-radius:16px; padding:4px 10px 4px 8px; }
+.user-dot { width:7px; height:7px; border-radius:50%; background:var(–green); flex-shrink:0; }
+.user-name { font-size:12px; color:var(–orange-dark); font-weight:700; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.btn { padding:8px 16px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; border:none; font-family:‘Noto Sans JP’,sans-serif; transition:all 0.2s; min-height:40px; }
+.btn-primary { background:linear-gradient(135deg,var(–orange),var(–orange2)); color:#fff; box-shadow:0 2px 8px rgba(249,115,22,0.3); }
+.btn-primary:active { transform:scale(0.97); }
+.btn-ghost { background:transparent; color:var(–text-mid); border:1px solid var(–border2); }
 
 /* BOTTOM NAV */
-.bottom-nav {
-  position:fixed; bottom:0; left:0; right:0; z-index:100;
-  background: var(--white); border-top:1px solid var(--border);
-  display:flex; height:64px; box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.nav-item {
-  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:3px; cursor:pointer; transition:all 0.2s; color:var(--text-dim);
-}
-.nav-item.active { color:var(--orange); }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:var(–white); border-top:1px solid var(–border); display:flex; height:64px; box-shadow:0 -2px 10px rgba(0,0,0,0.06); padding-bottom:env(safe-area-inset-bottom); }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all 0.2s; color:var(–text-dim); }
+.nav-item.active { color:var(–orange); }
 .nav-icon { font-size:22px; }
 .nav-label { font-size:10px; font-weight:700; }
 
-/* MAIN */
-main { padding: 0 16px; }
+main { padding:0 16px; }
 .panel { display:none; padding-top:20px; }
 .panel.active { display:block; }
 
 /* HERO */
-.hero {
-  background: linear-gradient(135deg, var(--orange) 0%, var(--orange2) 100%);
-  border-radius:20px; padding:28px 20px; margin-bottom:20px;
-  color:#fff; position:relative; overflow:hidden;
-  box-shadow: 0 8px 24px rgba(249,115,22,0.35);
-}
-.hero::before {
-  content:''; position:absolute; top:-40px; right:-40px;
-  width:160px; height:160px; border-radius:50%;
-  background:rgba(255,255,255,0.08);
-}
-.hero::after {
-  content:'⚾'; position:absolute; bottom:-10px; right:16px;
-  font-size:80px; opacity:0.15; line-height:1;
-}
+.hero { background:linear-gradient(135deg,var(–orange) 0%,var(–orange2) 100%); border-radius:20px; padding:28px 20px; margin-bottom:20px; color:#fff; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(249,115,22,0.35); }
+.hero::before { content:’’; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.08); }
+.hero::after { content:‘⚾’; position:absolute; bottom:-10px; right:16px; font-size:80px; opacity:0.15; line-height:1; }
 .hero-label { font-size:11px; font-weight:700; letter-spacing:1px; opacity:0.85; margin-bottom:8px; }
-.hero-title { font-family:'Montserrat',sans-serif; font-size:26px; font-weight:900; line-height:1.2; margin-bottom:10px; }
+.hero-title { font-family:‘Montserrat’,sans-serif; font-size:26px; font-weight:900; line-height:1.2; margin-bottom:10px; }
 .hero-desc { font-size:13px; opacity:0.9; line-height:1.7; margin-bottom:20px; }
 .hero-cta { display:flex; gap:10px; }
 .hero-cta .btn { flex:1; font-size:13px; padding:11px; border-radius:12px; }
-.btn-white { background:#fff; color:var(--orange); font-weight:900; }
+.btn-white { background:#fff; color:var(–orange); font-weight:900; }
 .btn-white-outline { background:transparent; border:2px solid rgba(255,255,255,0.6); color:#fff; font-weight:700; }
 
 /* STATS */
-.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
-.stat-card {
-  background:var(--white); border:1px solid var(--border);
-  border-radius:14px; padding:16px 12px; text-align:center;
-  box-shadow:var(--shadow);
-}
-.stat-num { font-family:'Montserrat',sans-serif; font-size:30px; font-weight:900; color:var(--orange); line-height:1; }
-.stat-label { font-size:10px; color:var(--text-dim); margin-top:4px; font-weight:500; }
+.stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:20px; }
+.stat-card { background:var(–white); border:1px solid var(–border); border-radius:14px; padding:16px 12px; text-align:center; box-shadow:var(–shadow); }
+.stat-num { font-family:‘Montserrat’,sans-serif; font-size:30px; font-weight:900; color:var(–orange); line-height:1; }
+.stat-label { font-size:10px; color:var(–text-dim); margin-top:4px; font-weight:500; }
 
 /* POS FILTER */
 .pos-filter-wrap { margin-bottom:16px; }
-.pos-filter-label { font-size:11px; color:var(--text-dim); font-weight:700; letter-spacing:0.5px; margin-bottom:8px; }
+.pos-filter-label { font-size:11px; color:var(–text-dim); font-weight:700; letter-spacing:0.5px; margin-bottom:8px; }
 .pos-filter { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
 .pos-filter::-webkit-scrollbar { display:none; }
-.pos-btn {
-  flex-shrink:0; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700;
-  cursor:pointer; border:1.5px solid var(--border2); background:var(--white);
-  color:var(--text-mid); transition:all 0.2s; white-space:nowrap; min-height:36px;
-  box-shadow:var(--shadow);
-}
-.pos-btn.active {
-  background:var(--orange); border-color:var(--orange); color:#fff;
-  box-shadow: 0 2px 8px rgba(249,115,22,0.3);
-}
+.pos-btn { flex-shrink:0; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; border:1.5px solid var(–border2); background:var(–white); color:var(–text-mid); transition:all 0.2s; white-space:nowrap; min-height:36px; box-shadow:var(–shadow); }
+.pos-btn.active { background:var(–orange); border-color:var(–orange); color:#fff; box-shadow:0 2px 8px rgba(249,115,22,0.3); }
 
 /* RANKING */
 .ranking-list { display:flex; flex-direction:column; gap:8px; }
-.rank-item {
-  display:flex; align-items:center; gap:14px;
-  background:var(--white); border:1px solid var(--border);
-  border-radius:14px; padding:16px; box-shadow:var(--shadow);
-  animation:slideUp 0.35s ease both; position:relative; overflow:hidden;
-}
-.rank-item::before {
-  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
-  background:var(--border); border-radius:4px 0 0 4px;
-}
+.rank-item { display:flex; align-items:center; gap:14px; background:var(–white); border:1px solid var(–border); border-radius:14px; padding:16px; box-shadow:var(–shadow); animation:slideUp 0.35s ease both; position:relative; overflow:hidden; }
+.rank-item::before { content:’’; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(–border); border-radius:4px 0 0 4px; }
 .rank-item.top1::before { background:linear-gradient(180deg,#f59e0b,#fcd34d); }
 .rank-item.top2::before { background:linear-gradient(180deg,#94a3b8,#cbd5e1); }
 .rank-item.top3::before { background:linear-gradient(180deg,#d97706,#f59e0b); }
 @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.rank-num { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:900; width:28px; text-align:center; flex-shrink:0; }
+.rank-num { font-family:‘Montserrat’,sans-serif; font-size:22px; font-weight:900; width:28px; text-align:center; flex-shrink:0; }
 .rank-num.n1 { color:#f59e0b; }
 .rank-num.n2 { color:#94a3b8; }
 .rank-num.n3 { color:#d97706; }
-.rank-num.nX { color:var(--text-dim); font-size:16px; }
+.rank-num.nX { color:var(–text-dim); font-size:16px; }
 .rank-info { flex:1; min-width:0; }
-.rank-name { font-size:17px; font-weight:900; margin-bottom:4px; color:var(--text); }
+.rank-name { font-size:17px; font-weight:900; margin-bottom:6px; }
 .rank-badges { display:flex; gap:4px; flex-wrap:wrap; }
-.rank-badge {
-  font-size:10px; padding:2px 7px; border-radius:4px; font-weight:700;
-  background:var(--surface2); border:1px solid var(--border); color:var(--text-mid);
-}
-.rank-badge.orange { background:var(--orange-light); border-color:rgba(249,115,22,0.2); color:var(--orange-dark); }
+.rank-badge { font-size:11px; padding:2px 8px; border-radius:5px; font-weight:700; }
+.rank-badge-gray { background:var(–surface2); border:1px solid var(–border); color:var(–text-mid); font-size:10px; padding:2px 7px; border-radius:4px; font-weight:500; }
 .rank-right { text-align:right; flex-shrink:0; }
-.rank-count { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:900; color:var(--orange); }
-.rank-pct { font-size:11px; color:var(--text-dim); }
-.rank-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-top:5px; width:60px; }
-.rank-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--orange),var(--orange2)); }
+.rank-count { font-family:‘Montserrat’,sans-serif; font-size:22px; font-weight:900; color:var(–orange); }
+.rank-pct { font-size:11px; color:var(–text-dim); }
+.rank-bar { height:3px; background:var(–border); border-radius:2px; overflow:hidden; margin-top:5px; width:60px; }
+.rank-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(–orange),var(–orange2)); }
 
-.loading { text-align:center; padding:60px 20px; color:var(--text-dim); }
-.spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--orange); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+.loading { text-align:center; padding:60px 20px; color:var(–text-dim); }
+.spinner { width:32px; height:32px; border:3px solid var(–border); border-top-color:var(–orange); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
 @keyframes spin { to{transform:rotate(360deg)} }
-.empty { text-align:center; padding:60px 20px; color:var(--text-dim); font-size:14px; line-height:2; }
+.empty { text-align:center; padding:60px 20px; color:var(–text-dim); font-size:14px; line-height:2; }
 
 /* AUTH MODAL */
-.modal-overlay {
-  display:none; position:fixed; inset:0;
-  background:rgba(15,23,42,0.5); backdrop-filter:blur(8px);
-  z-index:200; align-items:flex-end; justify-content:center;
-}
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(8px); z-index:200; align-items:flex-end; justify-content:center; }
 .modal-overlay.show { display:flex; }
-.modal {
-  background:var(--white); border-radius:24px 24px 0 0;
-  padding:28px 20px 40px; width:100%; max-width:520px;
-  animation:slideUp 0.3s ease; position:relative;
-  box-shadow: 0 -8px 30px rgba(0,0,0,0.12);
-}
-.modal-handle { width:40px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 24px; }
-.modal-title { font-size:20px; font-weight:900; margin-bottom:4px; color:var(--text); }
-.modal-sub { font-size:13px; color:var(--text-dim); margin-bottom:24px; }
-.modal-close { position:absolute; top:20px; right:20px; cursor:pointer; color:var(--text-dim); font-size:22px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:var(--surface2); }
-.modal-tabs { display:flex; background:var(--surface2); border-radius:12px; padding:4px; margin-bottom:20px; }
-.modal-tab { flex:1; padding:10px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border-radius:8px; transition:all 0.2s; color:var(--text-dim); }
-.modal-tab.active { background:var(--white); color:var(--orange); box-shadow:var(--shadow); }
+.modal { background:var(–white); border-radius:24px 24px 0 0; padding:28px 20px 40px; width:100%; max-width:520px; animation:slideUp 0.3s ease; position:relative; box-shadow:0 -8px 30px rgba(0,0,0,0.12); }
+.modal-handle { width:40px; height:4px; background:var(–border2); border-radius:2px; margin:0 auto 24px; }
+.modal-title { font-size:20px; font-weight:900; margin-bottom:4px; }
+.modal-sub { font-size:13px; color:var(–text-dim); margin-bottom:24px; }
+.modal-close { position:absolute; top:20px; right:20px; cursor:pointer; color:var(–text-dim); font-size:22px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:var(–surface2); }
+.modal-tabs { display:flex; background:var(–surface2); border-radius:12px; padding:4px; margin-bottom:20px; }
+.modal-tab { flex:1; padding:10px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border-radius:8px; transition:all 0.2s; color:var(–text-dim); }
+.modal-tab.active { background:var(–white); color:var(–orange); box-shadow:var(–shadow); }
 .form-group { margin-bottom:14px; }
-.form-label { font-size:12px; font-weight:700; color:var(--text-mid); margin-bottom:6px; display:block; }
-.form-input {
-  width:100%; background:var(--surface2); border:1.5px solid var(--border);
-  border-radius:12px; padding:14px; color:var(--text);
-  font-family:'Noto Sans JP',sans-serif; font-size:16px;
-  outline:none; transition:border-color 0.2s; -webkit-appearance:none;
-}
-.form-input:focus { border-color:var(--orange); background:var(--white); }
-.form-input::placeholder { color:var(--text-dim); }
-.form-btn {
-  width:100%; padding:15px; margin-top:4px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  color:#fff; font-weight:900; font-size:16px; border:none;
-  border-radius:12px; cursor:pointer; font-family:'Noto Sans JP',sans-serif;
-  box-shadow: 0 4px 12px rgba(249,115,22,0.35); min-height:52px;
-}
+.form-label { font-size:12px; font-weight:700; color:var(–text-mid); margin-bottom:6px; display:block; }
+.form-input { width:100%; background:var(–surface2); border:1.5px solid var(–border); border-radius:12px; padding:14px; color:var(–text); font-family:‘Noto Sans JP’,sans-serif; font-size:16px; outline:none; transition:border-color 0.2s; -webkit-appearance:none; }
+.form-input:focus { border-color:var(–orange); background:var(–white); }
+.form-input::placeholder { color:var(–text-dim); }
+.form-optional { font-size:10px; color:var(–text-dim); margin-left:4px; font-weight:400; }
+.form-btn { width:100%; padding:15px; margin-top:4px; background:linear-gradient(135deg,var(–orange),var(–orange2)); color:#fff; font-weight:900; font-size:16px; border:none; border-radius:12px; cursor:pointer; font-family:‘Noto Sans JP’,sans-serif; box-shadow:0 4px 12px rgba(249,115,22,0.35); min-height:52px; }
 .form-btn:disabled { opacity:0.5; }
-.auth-error { font-size:12px; color:var(--red); margin-top:8px; display:none; padding:10px 12px; background:rgba(239,68,68,0.06); border-radius:8px; border:1px solid rgba(239,68,68,0.15); }
+.auth-error { font-size:12px; color:var(–red); margin-top:8px; display:none; padding:10px 12px; background:rgba(239,68,68,0.06); border-radius:8px; border:1px solid rgba(239,68,68,0.15); }
+.auth-note { font-size:11px; color:var(–text-dim); margin-top:12px; line-height:1.7; padding:10px 12px; background:var(–surface2); border-radius:8px; }
 
 /* SUBMIT */
-.login-gate {
-  border:2px dashed var(--border2); border-radius:20px;
-  padding:48px 24px; text-align:center; background:var(--white); margin-bottom:16px;
-  box-shadow:var(--shadow);
-}
+.login-gate { border:2px dashed var(–border2); border-radius:20px; padding:48px 24px; text-align:center; background:var(–white); margin-bottom:16px; box-shadow:var(–shadow); }
 .login-gate-icon { font-size:48px; margin-bottom:16px; }
-.login-gate h3 { font-size:18px; font-weight:900; margin-bottom:10px; color:var(--text); }
-.login-gate p { font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:24px; }
+.login-gate h3 { font-size:18px; font-weight:900; margin-bottom:10px; }
+.login-gate p { font-size:14px; color:var(–text-dim); line-height:1.7; margin-bottom:24px; }
 .login-gate .btn { width:100%; font-size:16px; padding:15px; border-radius:12px; }
 
-.section-card {
-  background:var(--white); border:1px solid var(--border);
-  border-radius:16px; padding:20px; margin-bottom:12px; box-shadow:var(--shadow);
-}
-.section-card-title {
-  font-size:12px; font-weight:700; color:var(--orange); letter-spacing:1px;
-  text-transform:uppercase; margin-bottom:16px;
-  display:flex; align-items:center; gap:8px;
-}
-.section-card-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.section-card { background:var(–white); border:1px solid var(–border); border-radius:16px; padding:20px; margin-bottom:12px; box-shadow:var(–shadow); }
+.section-card-title { font-size:12px; font-weight:700; color:var(–orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.section-card-title::after { content:’’; flex:1; height:1px; background:var(–border); }
 
 /* PLAYER FIELD */
-.player-field {
-  border:1.5px solid var(--border); border-radius:14px; padding:16px;
-  margin-bottom:12px; background:var(--surface2); transition:border-color 0.2s;
-}
-.player-field:focus-within { border-color:var(--orange); background:var(--white); }
+.player-field { border:1.5px solid var(–border); border-radius:14px; padding:16px; margin-bottom:12px; background:var(–surface2); transition:border-color 0.2s; }
+.player-field:focus-within { border-color:var(–orange); background:var(–white); }
 .player-field-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-.pos-tag {
-  font-family:'Montserrat',sans-serif; font-size:11px; font-weight:900;
-  background:var(--orange); color:#fff; border-radius:6px; padding:3px 8px;
-}
-.pos-name { font-size:13px; font-weight:700; color:var(--text-mid); }
-.player-name-input {
-  width:100%; background:var(--white); border:1.5px solid var(--border);
-  border-radius:10px; padding:12px 14px; color:var(--text);
-  font-family:'Noto Sans JP',sans-serif; font-size:16px;
-  outline:none; transition:border-color 0.2s; margin-bottom:10px;
-  -webkit-appearance:none;
-}
-.player-name-input:focus { border-color:var(--orange); }
-.player-name-input::placeholder { color:var(--text-dim); font-size:14px; }
-.player-selects { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.player-selects-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.pos-tag { font-family:‘Montserrat’,sans-serif; font-size:11px; font-weight:900; background:var(–orange); color:#fff; border-radius:6px; padding:3px 8px; }
+.pos-name { font-size:13px; font-weight:700; color:var(–text-mid); }
+.player-name-input { width:100%; background:var(–white); border:1.5px solid var(–border); border-radius:10px; padding:12px 14px; color:var(–text); font-family:‘Noto Sans JP’,sans-serif; font-size:16px; outline:none; transition:border-color 0.2s; margin-bottom:10px; -webkit-appearance:none; }
+.player-name-input:focus { border-color:var(–orange); }
+.player-name-input::placeholder { color:var(–text-dim); font-size:14px; }
+.player-selects-2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+.player-selects-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px; }
+.player-selects-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-bottom:8px; }
 .select-wrap { display:flex; flex-direction:column; gap:4px; }
-.select-label { font-size:10px; font-weight:700; color:var(--text-dim); letter-spacing:0.3px; }
-.player-select {
-  background:var(--white); border:1.5px solid var(--border);
-  border-radius:8px; padding:9px 10px; color:var(--text);
-  font-family:'Noto Sans JP',sans-serif; font-size:13px;
-  outline:none; width:100%; -webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%2394a3b8' d='M5 7L0 0h10z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 8px center;
-  padding-right:24px;
-}
-.player-select:focus { border-color:var(--orange); outline:none; }
+.select-label { font-size:10px; font-weight:700; color:var(–text-dim); letter-spacing:0.3px; }
+.player-select { background:var(–white); border:1.5px solid var(–border); border-radius:8px; padding:9px 10px; color:var(–text); font-family:‘Noto Sans JP’,sans-serif; font-size:12px; outline:none; width:100%; -webkit-appearance:none; background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘7’%3E%3Cpath fill=’%2394a3b8’ d=‘M5 7L0 0h10z’/%3E%3C/svg%3E”); background-repeat:no-repeat; background-position:right 8px center; padding-right:24px; }
+.player-select:focus { border-color:var(–orange); outline:none; }
 
-.already-submitted {
-  background:var(--orange-light); border:1.5px solid rgba(249,115,22,0.25);
-  border-radius:16px; padding:28px 20px; text-align:center;
-  margin-bottom:16px; display:none; box-shadow:var(--shadow);
-}
-.already-submitted p { font-size:15px; font-weight:700; color:var(--orange-dark); margin-bottom:14px; }
-.already-submitted small { font-size:12px; color:var(--text-dim); display:block; margin-top:10px; }
+.already-submitted { background:var(–orange-light); border:1.5px solid rgba(249,115,22,0.25); border-radius:16px; padding:28px 20px; text-align:center; margin-bottom:16px; display:none; box-shadow:var(–shadow); }
+.already-submitted p { font-size:15px; font-weight:700; color:var(–orange-dark); margin-bottom:14px; }
+.already-submitted small { font-size:12px; color:var(–text-dim); display:block; margin-top:10px; }
 .already-submitted .btn { width:100%; font-size:15px; padding:13px; border-radius:12px; }
 
-.submit-btn {
-  width:100%; margin-top:16px; padding:16px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  color:#fff; font-weight:900; font-size:16px; border:none;
-  border-radius:14px; cursor:pointer; font-family:'Noto Sans JP',sans-serif;
-  box-shadow: 0 4px 16px rgba(249,115,22,0.4); min-height:56px;
-  transition: all 0.2s;
-}
-.submit-btn:hover { box-shadow: 0 6px 20px rgba(249,115,22,0.5); }
+.submit-btn { width:100%; margin-top:16px; padding:16px; background:linear-gradient(135deg,var(–orange),var(–orange2)); color:#fff; font-weight:900; font-size:16px; border:none; border-radius:12px; cursor:pointer; font-family:‘Noto Sans JP’,sans-serif; box-shadow:0 4px 16px rgba(249,115,22,0.4); min-height:56px; transition:all 0.2s; }
 .submit-btn:disabled { opacity:0.5; box-shadow:none; }
 
 .msg { border-radius:10px; padding:14px; text-align:center; font-weight:700; font-size:14px; margin-top:12px; display:none; }
-.msg-success { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); color:var(--green); }
-.msg-error { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); color:var(--red); }
+.msg-success { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); color:var(–green); }
+.msg-error { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); color:var(–red); }
 
-/* MY ORDER */
-.submit-my-tabs { display:flex; background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:4px; margin-bottom:16px; box-shadow:var(--shadow); }
-.submit-my-tab { flex:1; padding:10px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border-radius:10px; transition:all 0.2s; color:var(--text-dim); }
-.submit-my-tab.active { background:var(--white); color:var(--orange); box-shadow:var(--shadow); }
+/* SUBMIT/MY TABS */
+.submit-my-tabs { display:flex; background:var(–surface2); border:1px solid var(–border); border-radius:14px; padding:4px; margin-bottom:16px; box-shadow:var(–shadow); }
+.submit-my-tab { flex:1; padding:10px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border-radius:10px; transition:all 0.2s; color:var(–text-dim); }
+.submit-my-tab.active { background:var(–white); color:var(–orange); box-shadow:var(–shadow); }
 .submit-my-content { display:none; }
 .submit-my-content.active { display:block; }
 
-.my-card {
-  background:var(--white); border:1px solid var(--border);
-  border-radius:16px; overflow:hidden; margin-bottom:12px; box-shadow:var(--shadow);
-}
-.my-card-header {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:14px 16px; border-bottom:1px solid var(--border); background:var(--surface2);
-}
-.my-card-name { font-size:14px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
-.my-card-name::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+/* MY ORDER */
+.my-card { background:var(–white); border:1px solid var(–border); border-radius:16px; overflow:hidden; margin-bottom:12px; box-shadow:var(–shadow); }
+.my-card-header { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(–border); background:var(–surface2); }
+.my-card-name { font-size:14px; font-weight:700; color:var(–text); display:flex; align-items:center; gap:8px; }
+.my-card-name::before { content:’’; width:7px; height:7px; border-radius:50%; background:var(–green); flex-shrink:0; }
 .my-card-actions { display:flex; gap:8px; }
-.action-btn { padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all 0.2s; min-height:34px; border:1.5px solid var(--border2); background:var(--white); color:var(--text-mid); }
-.action-edit:active { border-color:var(--orange); color:var(--orange); }
-.action-del:active { border-color:var(--red); color:var(--red); }
+.action-btn { padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:‘Noto Sans JP’,sans-serif; transition:all 0.2s; min-height:34px; border:1.5px solid var(–border2); background:var(–white); color:var(–text-mid); }
 .my-card-body { padding:16px; }
 .my-order-list-inner { display:flex; flex-direction:column; gap:8px; }
-.my-order-row {
-  display:flex; gap:10px; align-items:flex-start;
-  padding:12px; background:var(--surface2); border-radius:10px;
-  border:1px solid var(--border);
-}
-.my-order-tag { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:900; color:#fff; background:var(--orange); border-radius:5px; padding:2px 7px; flex-shrink:0; margin-top:2px; }
+.my-order-row { display:flex; gap:10px; align-items:flex-start; padding:12px; background:var(–surface2); border-radius:10px; border:1px solid var(–border); }
+.my-order-tag { font-family:‘Montserrat’,sans-serif; font-size:10px; font-weight:900; color:#fff; background:var(–orange); border-radius:5px; padding:2px 7px; flex-shrink:0; margin-top:2px; }
 .my-order-info { flex:1; }
-.my-order-player { font-size:14px; font-weight:900; color:var(--text); margin-bottom:4px; }
+.my-order-player { font-size:14px; font-weight:900; color:var(–text); margin-bottom:6px; }
 .my-order-badges { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:4px; }
-.my-order-badge { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; background:var(--orange-light); border:1px solid rgba(249,115,22,0.15); color:var(--orange-dark); }
-.my-order-series { font-size:11px; color:var(--text-dim); }
-.my-order-usage {
-  margin-top:8px; padding:8px 12px;
-  background:var(--orange-light); border-radius:8px;
-  border:1px solid rgba(249,115,22,0.15);
-  font-size:12px; color:var(--orange-dark); font-weight:700;
-  display:flex; align-items:center; gap:6px;
-}
+.my-order-badge { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; }
+.my-order-series { font-size:11px; color:var(–text-dim); margin-bottom:6px; }
+.my-order-usage { margin-top:6px; padding:8px 12px; background:var(–orange-light); border-radius:8px; border:1px solid rgba(249,115,22,0.15); font-size:12px; color:var(–orange-dark); font-weight:700; display:flex; align-items:center; gap:6px; }
 .my-order-usage-bar { flex:1; height:4px; background:rgba(249,115,22,0.15); border-radius:2px; overflow:hidden; }
-.my-order-usage-fill { height:100%; background:var(--orange); border-radius:2px; }
+.my-order-usage-fill { height:100%; background:var(–orange); border-radius:2px; }
 
 /* EDIT MODAL */
-.edit-modal {
-  background:var(--white); border-radius:24px 24px 0 0;
-  padding:24px 20px 40px; width:100%; max-width:520px;
-  max-height:90vh; overflow-y:auto; animation:slideUp 0.3s ease;
-  box-shadow: 0 -8px 30px rgba(0,0,0,0.12);
-}
+.edit-modal { background:var(–white); border-radius:24px 24px 0 0; padding:24px 20px 40px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; animation:slideUp 0.3s ease; box-shadow:0 -8px 30px rgba(0,0,0,0.12); }
 
 /* ABOUT */
-.about-hero {
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  border-radius:20px; padding:32px 20px; text-align:center; margin-bottom:16px;
-  color:#fff; position:relative; overflow:hidden;
-  box-shadow: 0 8px 24px rgba(249,115,22,0.35);
-}
-.about-hero::after { content:'⚾'; position:absolute; bottom:-10px; right:16px; font-size:80px; opacity:0.15; }
+.about-hero { background:linear-gradient(135deg,var(–orange),var(–orange2)); border-radius:20px; padding:32px 20px; text-align:center; margin-bottom:16px; color:#fff; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(249,115,22,0.35); }
+.about-hero::after { content:‘⚾’; position:absolute; bottom:-10px; right:16px; font-size:80px; opacity:0.15; }
 .about-app-icon { font-size:48px; margin-bottom:12px; }
-.about-title { font-family:'Montserrat',sans-serif; font-size:26px; font-weight:900; margin-bottom:8px; }
+.about-title { font-family:‘Montserrat’,sans-serif; font-size:26px; font-weight:900; margin-bottom:8px; }
 .about-tagline { font-size:14px; opacity:0.9; line-height:1.8; }
 .about-features { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
-.feature-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:18px 16px; display:flex; gap:14px; align-items:flex-start; box-shadow:var(--shadow); }
+.feature-card { background:var(–white); border:1px solid var(–border); border-radius:14px; padding:18px 16px; display:flex; gap:14px; align-items:flex-start; box-shadow:var(–shadow); }
 .feature-icon { font-size:26px; flex-shrink:0; }
-.feature-title { font-size:14px; font-weight:900; margin-bottom:4px; color:var(--text); }
-.feature-desc { font-size:13px; color:var(--text-dim); line-height:1.7; }
-.about-section { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px 16px; margin-bottom:10px; box-shadow:var(--shadow); }
-.about-section-title { font-size:13px; font-weight:700; color:var(--orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.about-section-title::before { content:''; width:3px; height:14px; background:linear-gradient(180deg,var(--orange),var(--orange2)); border-radius:2px; flex-shrink:0; }
+.feature-title { font-size:14px; font-weight:900; margin-bottom:4px; }
+.feature-desc { font-size:13px; color:var(–text-dim); line-height:1.7; }
+.about-section { background:var(–white); border:1px solid var(–border); border-radius:14px; padding:20px 16px; margin-bottom:10px; box-shadow:var(–shadow); }
+.about-section-title { font-size:13px; font-weight:700; color:var(–orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.about-section-title::before { content:’’; width:3px; height:14px; background:linear-gradient(180deg,var(–orange),var(–orange2)); border-radius:2px; flex-shrink:0; }
 .about-steps { display:flex; flex-direction:column; gap:14px; }
 .about-step { display:flex; gap:14px; }
-.step-num { font-family:'Montserrat',sans-serif; font-size:18px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--orange),var(--orange2)); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow: 0 2px 8px rgba(249,115,22,0.3); }
-.step-title { font-size:14px; font-weight:900; margin-bottom:4px; color:var(--text); }
-.step-desc { font-size:13px; color:var(--text-dim); line-height:1.7; }
-.about-note { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:16px; font-size:12px; color:var(--text-mid); line-height:1.9; }
-.about-note strong { color:var(--orange-dark); }
+.step-num { font-family:‘Montserrat’,sans-serif; font-size:18px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(–orange),var(–orange2)); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-title { font-size:14px; font-weight:900; margin-bottom:4px; }
+.step-desc { font-size:13px; color:var(–text-dim); line-height:1.7; }
+.about-note { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:16px; font-size:12px; color:var(–text-mid); line-height:1.9; }
+.about-note strong { color:var(–orange-dark); }
+.privacy-link { display:block; text-align:center; margin-top:16px; color:var(–orange); font-size:13px; font-weight:700; text-decoration:none; padding:12px; background:var(–orange-light); border-radius:10px; border:1px solid rgba(249,115,22,0.2); }
 
-.panel-footer { margin-top:24px; font-size:11px; color:var(--text-dim); line-height:1.9; text-align:center; }
+/* PRIVACY */
+.privacy-hero { background:linear-gradient(135deg,var(–orange),var(–orange2)); border-radius:20px; padding:28px 20px; margin-bottom:20px; color:#fff; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(249,115,22,0.35); }
+.privacy-hero::after { content:‘🔒’; position:absolute; bottom:-10px; right:16px; font-size:80px; opacity:0.15; }
+.privacy-hero-label { font-size:11px; font-weight:700; letter-spacing:1px; opacity:0.85; margin-bottom:8px; }
+.privacy-hero-title { font-family:‘Montserrat’,sans-serif; font-size:24px; font-weight:900; margin-bottom:8px; }
+.privacy-hero-date { font-size:12px; opacity:0.8; }
+.privacy-section { background:var(–white); border:1px solid var(–border); border-radius:14px; padding:20px 16px; margin-bottom:10px; box-shadow:var(–shadow); }
+.privacy-section-title { font-size:14px; font-weight:900; color:var(–text); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.privacy-section-title::before { content:’’; width:3px; height:16px; background:linear-gradient(180deg,var(–orange),var(–orange2)); border-radius:2px; flex-shrink:0; }
+.privacy-body { font-size:13px; color:var(–text-mid); line-height:1.9; }
+.privacy-body p { margin-bottom:10px; }
+.privacy-body p:last-child { margin-bottom:0; }
+.privacy-body ul { padding-left:18px; margin-bottom:10px; }
+.privacy-body ul li { margin-bottom:6px; }
+.privacy-body strong { color:var(–text); font-weight:700; }
+.privacy-table { width:100%; border-collapse:collapse; margin-bottom:12px; }
+.privacy-table th, .privacy-table td { padding:10px 12px; text-align:left; border-bottom:1px solid var(–border); font-size:12px; }
+.privacy-table th { font-weight:700; color:var(–text-mid); background:var(–surface2); }
+.privacy-table tr:last-child th, .privacy-table tr:last-child td { border-bottom:none; }
+.contact-card { background:var(–orange-light); border:1.5px solid rgba(249,115,22,0.25); border-radius:12px; padding:18px; display:flex; align-items:center; gap:14px; margin-top:8px; }
+.contact-icon { font-size:28px; flex-shrink:0; }
+.contact-label { font-size:10px; font-weight:700; color:var(–text-dim); letter-spacing:0.5px; margin-bottom:4px; }
+.contact-email { font-size:14px; font-weight:900; color:var(–orange-dark); }
+.note-box { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:14px; margin-top:12px; font-size:12px; color:var(–text-mid); line-height:1.9; }
+.note-box strong { color:var(–orange-dark); }
+
+.panel-footer { margin-top:24px; font-size:11px; color:var(–text-dim); line-height:1.9; text-align:center; }
+
+/* AUTOCOMPLETE */
+.ac-wrap { position:relative; margin-bottom:10px; }
+.ac-list {
+position:absolute; top:100%; left:0; right:0; z-index:300;
+background:var(–white); border:1.5px solid var(–orange);
+border-top:none; border-radius:0 0 10px 10px;
+max-height:180px; overflow-y:auto;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+display:none;
+}
+.ac-list.show { display:block; }
+.ac-item {
+padding:10px 14px; font-size:14px; cursor:pointer;
+border-bottom:1px solid var(–border); transition:background 0.15s;
+}
+.ac-item:last-child { border-bottom:none; }
+.ac-item:hover, .ac-item.active { background:var(–orange-light); color:var(–orange-dark); font-weight:700; }
+.ac-item mark { background:none; color:var(–orange); font-weight:900; }
 </style>
+
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-icon">⚾</div>
-    <div class="logo-text">みんなの<span>リアタイ</span>オーダー</div>
-  </div>
+  <div class="logo"><div class="logo-icon">⚾</div><div class="logo-text">みんなの<span>リアタイ</span>オーダー</div></div>
   <div class="header-right">
-    <div class="user-chip" id="user-chip">
-      <div class="user-dot"></div>
-      <div class="user-name" id="user-name"></div>
-    </div>
+    <div class="user-chip" id="user-chip"><div class="user-dot"></div><div class="user-name" id="user-name"></div></div>
     <button class="btn btn-primary" id="auth-btn" onclick="showAuthModal()">ログイン</button>
   </div>
 </header>
 
 <!-- AUTH MODAL -->
+
 <div class="modal-overlay" id="auth-modal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-close" onclick="hideAuthModal()">✕</div>
     <div class="modal-title">アカウント</div>
-    <div class="modal-sub">メールアドレスで無料登録できます</div>
+    <div class="modal-sub">ニックネームとパスワードで登録できます</div>
     <div class="modal-tabs">
       <div class="modal-tab active" onclick="switchAuthTab('login')">ログイン</div>
       <div class="modal-tab" onclick="switchAuthTab('register')">新規登録</div>
     </div>
     <div id="auth-login">
-      <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="email" id="login-email" placeholder="example@gmail.com" autocomplete="email"></div>
+      <div class="form-group"><label class="form-label">ニックネーム</label><input class="form-input" type="text" id="login-name" placeholder="登録時のニックネーム"></div>
       <div class="form-group"><label class="form-label">パスワード</label><input class="form-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <input type="checkbox" id="login-remember" style="width:16px;height:16px;accent-color:var(--orange)">
+        <label for="login-remember" style="font-size:13px;color:var(--text-mid);cursor:pointer">ログイン状態を保持する</label>
+      </div>
       <div class="auth-error" id="login-error"></div>
       <button class="form-btn" id="login-btn" onclick="doLogin()">ログイン</button>
+      <div id="reset-section" style="margin-top:12px;display:none">
+        <div class="form-group"><label class="form-label">パスワードリセット用メールアドレス</label><input class="form-input" type="email" id="reset-email" placeholder="登録時のメールアドレス"></div>
+        <button class="form-btn" style="background:var(--surface2);color:var(--text-mid);box-shadow:none;border:1.5px solid var(--border2)" onclick="doResetPassword()">リセットメールを送信</button>
+      </div>
+      <div style="text-align:center;margin-top:12px">
+        <span style="font-size:12px;color:var(--orange);cursor:pointer;text-decoration:underline" onclick="document.getElementById('reset-section').style.display=document.getElementById('reset-section').style.display==='none'?'block':'none'">パスワードを忘れた方はこちら</span>
+      </div>
+      <div class="auth-error" id="reset-msg" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);color:var(--green)"></div>
     </div>
     <div id="auth-register" style="display:none">
       <div class="form-group"><label class="form-label">ニックネーム</label><input class="form-input" type="text" id="reg-name" placeholder="例：プロスピ太郎"></div>
-      <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="email" id="reg-email" placeholder="example@gmail.com" autocomplete="email"></div>
       <div class="form-group"><label class="form-label">パスワード（8文字以上）</label><input class="form-input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password"></div>
+      <div class="form-group"><label class="form-label">メールアドレス<span class="form-optional">（任意）</span></label><input class="form-input" type="email" id="reg-email" placeholder="example@gmail.com" autocomplete="email"></div>
+      <div class="auth-note">※ メールアドレスは任意です。入力しない場合、パスワードを忘れると再設定できません。個人情報はFirebase（Google）で安全に管理されます。</div>
       <div class="auth-error" id="reg-error"></div>
       <button class="form-btn" id="reg-btn" onclick="doRegister()">登録する</button>
     </div>
@@ -438,6 +344,7 @@ main { padding: 0 16px; }
 </div>
 
 <!-- EDIT MODAL -->
+
 <div class="modal-overlay" id="edit-modal">
   <div class="edit-modal">
     <div class="modal-handle"></div>
@@ -455,15 +362,14 @@ main { padding: 0 16px; }
     <div class="hero">
       <div class="hero-label">⚡ PROSPI A REALTAI ORDER</div>
       <div class="hero-title">みんなの<br>リアタイオーダー</div>
-      <div class="hero-desc">プロスピAユーザーのリアタイオーダーをポジション別にランキング。オーダー作りの参考に！</div>
+      <div class="hero-desc">プロスピAユーザーのリアタイオーダーをポジション別にランキング！</div>
       <div class="hero-cta">
         <button class="btn btn-white-outline" onclick="switchPanel('submit');setSubmitMyTab('submit')">投稿する</button>
         <button class="btn btn-white" onclick="document.getElementById('ranking-list').scrollIntoView({behavior:'smooth'})">ランキングを見る ↓</button>
       </div>
     </div>
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-num" id="total-orders">–</div><div class="stat-label">投稿数</div></div>
-      <div class="stat-card"><div class="stat-num" id="total-users">–</div><div class="stat-label">ユーザー数</div></div>
+      <div class="stat-card"><div class="stat-num" id="total-users">–</div><div class="stat-label">登録ユーザー数</div></div>
       <div class="stat-card"><div class="stat-num">2026</div><div class="stat-label">S1 対応</div></div>
     </div>
     <div class="pos-filter-wrap">
@@ -482,23 +388,26 @@ main { padding: 0 16px; }
         <div class="pos-btn" onclick="changePos('抑え',this)">抑え</div>
       </div>
     </div>
+    <!-- ④検索機能 -->
+    <div style="position:relative;margin-bottom:16px">
+      <input class="player-name-input" type="text" id="ranking-search" placeholder="🔍 選手名で絞り込む..." oninput="filterRanking(this.value)" style="margin-bottom:0;padding-left:14px">
+    </div>
     <div class="ranking-list" id="ranking-list"><div class="loading"><div class="spinner"></div>読み込み中...</div></div>
     <div class="panel-footer">※ 非公式ファンサイト。プロ野球スピリッツAはKONAMIの登録商標です。</div>
   </div>
 
   <!-- SUBMIT / MY ORDER -->
+
   <div class="panel" id="panel-submit">
     <div class="submit-my-tabs">
       <div class="submit-my-tab active" id="tab-submit" onclick="setSubmitMyTab('submit')">➕ オーダー投稿</div>
       <div class="submit-my-tab" id="tab-myorder" onclick="setSubmitMyTab('myorder')">👤 マイオーダー</div>
     </div>
-
-    <!-- 投稿 -->
     <div class="submit-my-content active" id="content-submit">
       <div class="login-gate" id="login-gate-submit">
         <div class="login-gate-icon">🔐</div>
         <h3>ログインが必要です</h3>
-        <p>オーダーを投稿するには<br>アカウント登録・ログインが必要です。<br>登録は無料です！</p>
+        <p>オーダーを投稿するには<br>アカウント登録・ログインが必要です。<br>登録は無料！メールアドレス不要です。</p>
         <button class="btn btn-primary" onclick="showAuthModal()">ログイン / 新規登録</button>
       </div>
       <div class="already-submitted" id="already-submitted">
@@ -509,10 +418,7 @@ main { padding: 0 16px; }
       <div id="submit-form" style="display:none">
         <div class="section-card">
           <div class="section-card-title">投稿者情報</div>
-          <div class="form-group" style="margin-bottom:0">
-            <label class="form-label">表示名</label>
-            <input class="player-name-input" type="text" id="f-username" placeholder="ニックネームで表示されます" style="margin-bottom:0">
-          </div>
+          <input class="player-name-input" type="text" id="f-username" placeholder="表示名（ニックネームで表示されます）" style="margin-bottom:0">
         </div>
         <div class="section-card">
           <div class="section-card-title">野手オーダー</div>
@@ -528,8 +434,6 @@ main { padding: 0 16px; }
       </div>
       <div class="panel-footer">1アカウント1オーダーまで。投稿後はマイオーダーから編集できます。</div>
     </div>
-
-    <!-- マイオーダー -->
     <div class="submit-my-content" id="content-myorder">
       <div class="login-gate" id="login-gate-myorder">
         <div class="login-gate-icon">👤</div>
@@ -545,6 +449,7 @@ main { padding: 0 16px; }
   </div>
 
   <!-- ABOUT -->
+
   <div class="panel" id="panel-about">
     <div class="about-hero">
       <div class="about-app-icon">⚾</div>
@@ -553,14 +458,14 @@ main { padding: 0 16px; }
     </div>
     <div class="about-features">
       <div class="feature-card"><div class="feature-icon">📊</div><div><div class="feature-title">リアルタイムランキング</div><div class="feature-desc">ポジション別の使用率をリアルタイムで確認。みんなが使っている選手がすぐわかります。</div></div></div>
-      <div class="feature-card"><div class="feature-icon">🎮</div><div><div class="feature-title">オーダー投稿</div><div class="feature-desc">自分のリアタイオーダーを投稿してランキングに参加。選手名・ランク・種類・シリーズを入力するだけ！</div></div></div>
+      <div class="feature-card"><div class="feature-icon">🎮</div><div><div class="feature-title">オーダー投稿</div><div class="feature-desc">自分のリアタイオーダーを投稿してランキングに参加。選手名・球団・ランク・種類・弾道・シリーズを入力するだけ！</div></div></div>
       <div class="feature-card"><div class="feature-icon">📈</div><div><div class="feature-title">使用人数チェック</div><div class="feature-desc">マイオーダーから自分の選手が何人に使われているか確認できます。</div></div></div>
     </div>
     <div class="about-section">
       <div class="about-section-title">使い方</div>
       <div class="about-steps">
-        <div class="about-step"><div class="step-num">1</div><div><div class="step-title">アカウント登録</div><div class="step-desc">右上の「ログイン」からメールアドレスで無料登録。ニックネームだけで始められます。</div></div></div>
-        <div class="about-step"><div class="step-num">2</div><div><div class="step-title">オーダーを投稿</div><div class="step-desc">各ポジションの選手名・ランク・種類・シリーズを入力して投稿。3ポジション以上から投稿できます。</div></div></div>
+        <div class="about-step"><div class="step-num">1</div><div><div class="step-title">アカウント登録</div><div class="step-desc">右上の「ログイン」からニックネームとパスワードで無料登録。メールアドレスは不要です！</div></div></div>
+        <div class="about-step"><div class="step-num">2</div><div><div class="step-title">オーダーを投稿</div><div class="step-desc">各ポジションの選手名・球団・ランク・種類・弾道・シリーズを入力して投稿。3ポジション以上から投稿できます。</div></div></div>
         <div class="about-step"><div class="step-num">3</div><div><div class="step-title">ランキングを確認</div><div class="step-desc">ポジション別の人気選手をチェック。マイオーダーでは自分の選手の使用人数も確認できます。</div></div></div>
       </div>
     </div>
@@ -573,23 +478,178 @@ main { padding: 0 16px; }
         <strong>※ 1人1オーダー</strong>　投稿は1アカウントにつき1つです。
       </div>
     </div>
+    <a class="privacy-link" href="#" onclick="switchPanel('privacy');return false;">🔒 プライバシーポリシーを確認する</a>
+    <a class="privacy-link" href="#" onclick="switchPanel('terms');return false;" style="margin-top:8px">📋 利用規約を確認する</a>
+    <div class="panel-footer">© 2026 みんなのリアタイオーダー（非公式ファンサイト）</div>
+  </div>
+
+  <!-- PRIVACY -->
+
+  <div class="panel" id="panel-privacy">
+    <div class="privacy-hero">
+      <div class="privacy-hero-label">PRIVACY POLICY</div>
+      <div class="privacy-hero-title">プライバシーポリシー</div>
+      <div class="privacy-hero-date">制定日：2026年4月27日</div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">はじめに</div>
+      <div class="privacy-body"><p>「みんなのリアタイオーダー」（以下「本サービス」）は、ユーザーの皆様のプライバシーを尊重し、個人情報の適切な保護に努めます。本プライバシーポリシーは、本サービスにおける個人情報の収集・利用・管理方針を定めるものです。</p></div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">収集する情報</div>
+      <div class="privacy-body">
+        <table class="privacy-table">
+          <tr><th>情報の種類</th><th>収集タイミング</th></tr>
+          <tr><td>メールアドレス（任意）</td><td>アカウント登録時</td></tr>
+          <tr><td>ニックネーム</td><td>アカウント登録時</td></tr>
+          <tr><td>投稿オーダーデータ</td><td>オーダー投稿時</td></tr>
+          <tr><td>アクセスログ</td><td>サービス利用時</td></tr>
+        </table>
+        <div class="note-box"><strong>※ メールアドレスは任意です。</strong>入力しなくてもニックネームとパスワードのみでアカウント登録が可能です。ただしメールアドレスなしの場合、パスワードを忘れた際の再設定ができませんのでご注意ください。</div>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">情報の利用目的</div>
+      <div class="privacy-body">
+        <ul>
+          <li>アカウントの認証・管理</li>
+          <li>オーダーランキングの集計・表示</li>
+          <li>サービスの改善・機能向上</li>
+          <li>不正利用の検知・防止</li>
+        </ul>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">情報の管理・保存</div>
+      <div class="privacy-body">
+        <p>本サービスのユーザー情報は、<strong>Google Firebase</strong>（Google LLC提供）によって管理・保存されます。</p>
+        <ul>
+          <li>メールアドレス・パスワードはFirebase Authenticationにより暗号化して管理されます</li>
+          <li>パスワードは暗号化されており、運営者を含む第三者が参照することはできません</li>
+          <li>データはGoogleのセキュリティ基準に基づき保護されています</li>
+        </ul>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">第三者への提供</div>
+      <div class="privacy-body">
+        <p>本サービスは、以下の場合を除き、ユーザーの個人情報を第三者に提供・開示しません。</p>
+        <ul>
+          <li>ユーザー本人の同意がある場合</li>
+          <li>法令に基づく開示が必要な場合</li>
+        </ul>
+        <p><strong>投稿されたオーダーデータ（選手名・球団・ランク・弾道など）はランキングとして公開されますが、投稿者の個人情報（メールアドレスなど）は公開されません。</strong></p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">アカウントの削除</div>
+      <div class="privacy-body"><p>アカウントの削除をご希望の場合は、下記お問い合わせ先までご連絡ください。速やかに対応いたします。</p></div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">お問い合わせ</div>
+      <div class="privacy-body"><p>本プライバシーポリシーに関するお問い合わせは下記までお願いします。</p>
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-info">
+            <div class="contact-label">お問い合わせメールアドレス</div>
+            <div class="contact-email">realtai.order.info@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="privacy-link" href="#" onclick="switchPanel('about');return false;">← このサイトについてに戻る</a>
+    <div class="panel-footer">© 2026 みんなのリアタイオーダー（非公式ファンサイト）</div>
+  </div>
+
+  <!-- TERMS -->
+
+  <div class="panel" id="panel-terms">
+    <div class="privacy-hero">
+      <div class="privacy-hero-label">TERMS OF SERVICE</div>
+      <div class="privacy-hero-title">利用規約</div>
+      <div class="privacy-hero-date">制定日：2026年4月28日</div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">はじめに</div>
+      <div class="privacy-body">
+        <p>「みんなのリアタイオーダー」（以下「本サービス」）をご利用いただく前に、本利用規約をよくお読みください。本サービスを利用した時点で、本規約に同意したものとみなします。</p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">サービスの内容</div>
+      <div class="privacy-body">
+        <p>本サービスは、プロ野球スピリッツA（プロスピA）のリアタイオーダーをユーザーが投稿・共有し、ポジション別のランキングを確認できる非公式ファンサイトです。本サービスはKONAMI株式会社およびNPBとは一切関係ありません。</p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">禁止事項</div>
+      <div class="privacy-body">
+        <p>以下の行為を禁止します。</p>
+        <ul>
+          <li>虚偽の情報や存在しない選手名の投稿</li>
+          <li>他のユーザーへの誹謗中傷・嫌がらせ</li>
+          <li>本サービスの運営を妨害する行為</li>
+          <li>複数アカウントの作成による不正投稿</li>
+          <li>スクレイピング・自動投稿など不正なアクセス</li>
+          <li>その他、運営が不適切と判断する行為</li>
+        </ul>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">投稿データについて</div>
+      <div class="privacy-body">
+        <p>ユーザーが投稿したオーダーデータ（選手名・球団・ランク・弾道など）はランキングとして公開されます。投稿したデータは運営がランキング集計・サービス改善のために利用することがあります。</p>
+        <p>不適切と判断された投稿は、予告なく削除する場合があります。</p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">免責事項</div>
+      <div class="privacy-body">
+        <p>本サービスの利用に関して、以下の事項について運営は一切の責任を負いません。</p>
+        <ul>
+          <li>本サービスの利用によって生じたいかなる損害・トラブル</li>
+          <li>ユーザー間で発生したトラブル</li>
+          <li>サービスの停止・中断・データの消失</li>
+          <li>投稿データの正確性・完全性</li>
+          <li>外部サービス（Firebase・Netlifyなど）に起因する障害</li>
+          <li>その他本サービスの利用に関連して生じたあらゆる損害</li>
+        </ul>
+        <div class="note-box"><strong>※ 重要</strong>　本サービスはファンによる非公式の無償サービスです。いかなるトラブル・損害が発生した場合においても、運営者は一切の責任を負いません。ご利用は自己責任でお願いします。</div>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">サービスの変更・終了</div>
+      <div class="privacy-body">
+        <p>運営は予告なく本サービスの内容を変更、または終了することがあります。サービスの変更・終了によって生じた損害についても、運営は一切の責任を負いません。</p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">規約の変更</div>
+      <div class="privacy-body">
+        <p>本規約は必要に応じて変更することがあります。変更後も本サービスを利用した場合、変更後の規約に同意したものとみなします。</p>
+      </div>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-section-title">お問い合わせ</div>
+      <div class="privacy-body">
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-info">
+            <div class="contact-label">お問い合わせメールアドレス</div>
+            <div class="contact-email">realtai.order.info@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="privacy-link" href="#" onclick="switchPanel('about');return false;">← このサイトについてに戻る</a>
     <div class="panel-footer">© 2026 みんなのリアタイオーダー（非公式ファンサイト）</div>
   </div>
 </main>
 
 <nav class="bottom-nav">
-  <div class="nav-item active" id="nav-ranking" onclick="switchPanel('ranking')">
-    <div class="nav-icon">📊</div>
-    <div class="nav-label">ランキング</div>
-  </div>
-  <div class="nav-item" id="nav-submit" onclick="switchPanel('submit')">
-    <div class="nav-icon">➕</div>
-    <div class="nav-label">投稿・マイ</div>
-  </div>
-  <div class="nav-item" id="nav-about" onclick="switchPanel('about')">
-    <div class="nav-icon">ℹ️</div>
-    <div class="nav-label">このサイトは</div>
-  </div>
+  <div class="nav-item active" id="nav-ranking" onclick="switchPanel('ranking')"><div class="nav-icon">📊</div><div class="nav-label">ランキング</div></div>
+  <div class="nav-item" id="nav-submit" onclick="switchPanel('submit')"><div class="nav-icon">➕</div><div class="nav-label">投稿・マイ</div></div>
+  <div class="nav-item" id="nav-about" onclick="switchPanel('about')"><div class="nav-icon">ℹ️</div><div class="nav-label">このサイトは</div></div>
 </nav>
 
 <script type="module">
@@ -610,157 +670,284 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const RANKS = ['', 'S', 'A', 'B', 'C', 'D'];
-const TYPES = ['', '通常', '覚醒', 'TS', 'EX', 'セレクション', 'WS', 'OB', 'アニバ', 'ジュニア', 'B9', '侍ジャパン'];
-const YEARS = ['', ...Array.from({length:11},(_,i)=>`${2026-i}年`)];
-const SERIES = ['', 'Series1', 'Series2'];
+const RANK_CLASS = { 'S':'rank-s','A':'rank-a','B':'rank-b','C':'rank-c','D':'rank-d' };
+const TRAJECTORY_CLASS = {
+  'アーチスト':'trajectory-archist','パワーヒッター':'trajectory-power',
+  '高弾道':'trajectory-high','中弾道':'trajectory-mid',
+  'ラインドライブ':'trajectory-line','低弾道':'trajectory-low','グラウンダー':'trajectory-low',
+};
+
+const TEAMS = ['','巨人','阪神','DeNA','中日','広島','ヤクルト','ソフトバンク','日本ハム','楽天','西武','ロッテ','オリックス'];
+
+// 選手名リスト（オートコンプリート用）
+const PLAYERS = [...new Set([
+  // ロッテ
+  "石川","角中","井口","西野","中村","清田","涌井","田村","松永","鈴木","平沢","福浦","二木","内","デスパイネ","益田","荻野貴","有吉","唐川","種市","藤岡","藤原","石川柊","友杉","安田","小島","ポランコ","横山","髙部","澤村","田中晴","菊地","寺地","岡","佐々木朗","西村","ゲレーロ","ペルドモ","マーティン","レアード","エチェバリア","山口","国吉","美馬","東條","岩下","佐藤","加藤","中村奨","小野","ソト","里崎","落合","宮崎","木樽","廣池","高沢","山本大","小宮山","池田","別当","西川","レオン","上田","愛斗","大谷","堀","コルデロ","井上","小林雅","牛島","黒木","サブロー","伊良部","有藤","大松","河村","松川","初芝","藤岡裕","小坂","涌井","ゲレーロ","福田","平井","山内","今江","佐々木","角中","西野","ボス","八木","高部","石垣元","田中靖",
+  // 西武
+  "岸","メヒア","栗山","浅村","増田","中村","炭谷","金子侑","武隈","外崎","森","髙橋光成","多和田","山川","中島","秋山","平良","源田","今井","蛭間","佐藤龍","アブレイユ","松本","平井","奥村","武内","野村大","長谷川","佐藤隼","セデーニョ","水上","古賀悠","ウィンゲンター","平沼","田村","ネビン","渡部聖","滝澤","E.ラミレス","甲斐野","黒木","山村","渡邉","仲田","呉","辻","松坂","清原","石毛","松井","テリー","高橋朋","杉山","郭","牧田","カブレラ","土井","菊池","隅田","豊田","田辺","栗山","渡部健","吉川","石井","西口","工藤","本田","宮川","若林","G.G.佐藤","デストラーデ","稲尾","デニー","鈴木健","バークレオ","和田","帆足","伊東","小野寺","ギャレット","小関","ジャンセン","ブランドン","垣内","渡辺久","桑原","星野","古賀","桑原","滝澤","E.ラミレス","桑原","源田",
+  // 楽天
+  "則本","藤田","松井裕","銀次","松井","嶋","青山","ウィーラー","岡島","美馬","今江","茂木","鈴木翔","小深田","村林","安楽","フランコ","藤平","浅村","田中","早川","島内","辰己","太田","宋家豪","岸","小郷","阿部","荘司","石原","内","堀内","ヤフーレ","渡辺翔","今野","中島","鉄平","聖澤","山崎","磯部","津留崎","福山","西垣","宗山","内村","岩隈","藤原","涌井","有銘","礒部","ジョーンズ","高須","朝井","フェルナンデス","オコエ","ブラッシュ","ブセニッツ","ポンセ","黒川","瀧中","草野","枡田","永井","リック","松井友","小倉","横尾","加治屋","ゴンザレス","古謝","江原","マギー","大内","ラズナー","斎藤","ボイト","ハウザー","辰見鴻","ミコライオ","銀次","岩隈","山田","有銘","ジョーンズ","磯部","藤井","村林","宗山","古謝","黒川","涌井","西口","宗山",
+  // オリックス
+  "金子千尋","T-岡田","糸井","ディクソン","駿太","伊藤","安達","小谷野","吉田正","若月","宗","山岡","山本","中川","田嶋","阿部","頓宮","紅林","宮城","杉本","太田","ペルドモ","エスピノーザ","マチャド","森","曽谷","廣岡","古田島","麦谷","近藤","吉田一","ロメロ","西","増井","岸田","比嘉","ブーマー","イチロー","平野佳","山崎颯","山崎福","宇田川","榊原","K-鈴木","赤堀","後藤","坂口","来田","ヒギンス","澤田","富山","佐野","モヤ","東","福田","本田","椋木","山下","漆原","田口","能見","海田","ジョーンズ","大城","吉田凌","福本","ローズ","村上","北川","加藤英","パウエル","ラベロ","梶本","寺西","棟木","篠田","才木","藤川","金子千尋","イチロー","曽谷","西野","田嶋","マチャド","福永","川瀬","岩嵎","宗","宮城","中川","若月","頓宮","紅林","エスピノーザ","古田島","麦谷",
+  // 日本ハム
+  "中田","西川","増井","宮西","レアード","近藤","谷元","中島卓","陽","有原","上沢","加藤貴","田宮","清宮","玉井","水谷","水野","齋藤","伊藤","大田","松本剛","金村","郡司","北山","池田","吉田","万波","上川畑","河野","野村","田中正","生田目","奈良間","伏見","山崎福","レイエス","杉浦","達","石川直","大野","高梨","鍵谷","公文","渡邊","大田泰","横尾","鶴岡","村田","清水","杉谷","島崎","高橋信","浅間","ポンセ","今川","古川裕","宇佐見","マルティネス","バーヘイゲン","秋吉","王","堀","井口","B.ロドリゲス","五十幡","武田勝","アーリン","オバンドー","柏原","ミラバル","グロス","ウインタース","ヌニエス","小笠原","金子誠","建山","稲葉","ダルビッシュ","張本","西崎","斎藤佑","大杉","木田","糸井","岩本","田中賢","大川","矢澤","加藤","メネズ","片岡","五十嵐","奥村","船本","吉田輝","水野","齋藤","大川","大田",
+  // ソフトバンク
+  "本多","中村晃","森","福田","高谷","五十嵐","今宮","柳田","長谷川","武田","サファテ","内川","千賀","松田","和田","東浜","モイネロ","甲斐","栗原","オスナ","大関","藤井","近藤","周東","上林","牧原大","グラシアル","海野","ヘルナンデス","柳町","有原","山川","正木","津森","杉山","デスパイネ","スチュワートJr.","高橋礼","釜元","加治屋","嘉弥真","岩嵎","甲斐野","長谷川勇","大竹","明石","バンデンハーク","川島","川崎","城島","門田","李大浩","ズレータ","多村","斉藤","新垣","笠谷","摂津","前田悠","佐々木","村松","馬原","杉内","リチャード","石川","三森","野村","稲川","大道","松中","小久保","工藤","板東","ムーア","ダウンズ","上茶谷","大隣","又吉","吉住","西田","泉","村上","古川侑","アストゥディーヨ","増田","若田部","ファルケンボーグ","柴原","九鬼","吉永","二保","川埜","野村勇","藤井","柳町","大関","野村","ヘルナンデス","モイネロ","山川","海野","稲川","斉藤",
+  // ヤクルト
+  "小川","畠山","山田","川端","雄平","石川","上田","中村","秋吉","坂口","バレンティン","館山","松岡","石山","荒木","近藤","原樹理","長岡","サンタナ","荘司","高橋","村上","吉村","茂木","木澤","オスナ","古賀","小澤","塩見","清水","濱田","西浦","今野","丸山和","ランバート","サイスニード","ヤフーレ","岩田","中村悠","高梨","田口","大西","マクガフ","青木","太田","廣岡","内山","丸山翔","増田","梅野","奥川","藤井","宮本","岩村","古田","高津","池山","武岡","八重樫","バーネット","真中","澤井","若松","ペタジーニ","石井一","石井弘","金田","由規","ホージー","ラミレス","稲葉","成田","福地","ケラ","吉田大成","エスパーダ","エスコバー","グライシンガー","ホッジス","下川","飯田","橋本","松本直","仁志","杉浦","伊藤智","松本健","河村","松下","西川","丸山和","サンタナ","荘司","石山","吉村","オスナ","古賀","松下","池山",
+  // 広島
+  "菊池","大瀬良","鈴木誠","會澤","一岡","田中","丸","松山","中崎","野村","野間","ジョンソン","安部","今村","岡田","石原","薮田","床田","森下","小園","坂倉","九里","栗林","末包","ハーン","モンテロ","ターリー","矢崎","西川","フランスア","アドゥワ","長野","磯村","中村奨","堂林","宇草","甦江","玉村","森浦","二俣","大盛","島内","大道","シャイナー","中村健","高橋慶","天谷","林","外木場","前田健","緒方","シュルツ","前田","マクブルーム","デビッドソン","上本","遠藤","コルニエル","羽月","長谷部","佐藤柳","レグナルト","金本","黒田","エルドレッド","北別府","栗原","新井","江藤","小窪","ルイス","ギャレット","衣笠","永川","梵","廣瀬","山本浩","レイノルズ","ハッチ","佐々岡","横山","野村謙","アンダーソン","ライトル","中村貴","ネバラスカス","ピレラ","川口","大野","クロン","ファビアン","平川","中崎","モンテロ","ハーン","床田","森下","小園","坂倉","栗林","矢崎","石原","堂林","西川","平川",
+  // 中日
+  "大野","藤井","福谷","又吉","高橋周","平田","山井","大島","田島","京田","ビシエド","柳","R.マルティネス","小笠原","祖父江","木下拓","髙橋宏斗","石川昂","齊藤","村松","松山","中田","藤嶋","宇佐見","岡林","大野雄大","梅津","田中","清水","勝野","カリステ","加藤匠","川越","橋本","根尾","福永","A.マルティネス","谷元","遠藤","ロメロ","アルモンテ","松葉","笠原","涌井","髙橋宏","ロドリゲス","龍空","鵜飼","アキーノ","細川","金丸","ボスラー","石伊","アブレウ","中西","森野","今中","川上","岩瀬","宇野","山本昌","土生","ソーサ","樋口","谷繁","ゲレーロ","荒木","高木","三ツ間","伊藤","鈴木博","佐藤","ディカーソン","福留","和田","浅尾","立浪","江藤","パウエル","マルク","アレックス","英智","山崎","土田","板東","辻本","仲地","三好","草加","砂田","チェン","ブライト","岡野","高橋宏斗","細川","金丸","アブレウ","齋藤","ボスラー","石伊","中西","ビシエド","山本",
+  // 巨人
+  "阿部","菅野","片岡","澤村","亀井","長野","坂本","岡本","大勢","吉川尚","戸郷","丸","大城","中川","高梨","岸田","山崎伊","井上","泉口","田中瑛","リチャード","船迫","若林","増田陸","バルドナード","グリフィン","ヘルナンデス","浅野","小林","ケラー","西舘","門脇","秋広","中田","横川","鍬原","ビーディ","ブリンソン","中島","重信","鍵谷","ウォーカー","高橋","吉川光","パーラ","松原","今村","大竹","田口","小林誠","立岡","石川","宮國","野上","ビエイラ","廣岡","田中俊","赤星","メルセデス","田原誠","陽","香月","梶谷","増田大","ウィーラー","中井","モタ","堀田","山口","桜井","王","江川","長嶋","桑田","槙原","上原","松井","李承燁","クロマティ","ガルベス","篠塚","仁志","久保","二岡","鹿取","西本","内海","平内","大江","川端","張本","鉄原","小笠原","石塚","竹丸","岸田","船迫","山崎伊","泉口","田中瑛","リチャード","丸","吉川尚","門脇","秋広",
+  // DeNA
+  "ロペス","石川","山崎康","白崎","梶谷","井納","関根","高城","倉本","宮崎","今永","パットン","ソト","大和","三上","戸柱","砂田","濱口","平良","東","伊勢","牧","度会","ウィック","坂本","ジャクソン","三森","オースティン","入江","森原","石田裕","松尾","蝦名","筒香","大貫","山本","徳山","佐野","林","京田","石田健","梶原","伊藤光","楠本","国吉","エスコバー","柴田","神里","上茶谷","桑原","乙坂","宮城","木塚","ピープルズ","松本凌","ブラッグス","シピン","山口","平松","ローズ","内川","谷繁","波留","佐々木","田代","鈴木尚","エレラ","中根","中川虎","クルーン","西巻","松原","笠原","クリスキー","ウェンデルケン","バウアー","小田","竹田","ルイーズ","池谷","小池","高木豊","田中健","屋鋪","村田","駒田","相川","金城","進藤","京山","九鬼","森敬","蛯名","斎藤隆","野村","ポンセ","佐野","石上","竹田","ルイーズ","東","ビシエド","山本","小田","宮崎",
+  // 阪神
+  "藤浪","上本","福原","福留","大和","鶴岡","安藤","鳥谷","藤川","髙山","原口","能見","北條","江越","梅野","岩貞","陽川","桑原","糸原","糸井","中谷","大山","岩崎","佐藤輝","中野","才木","近本","森下","小幡","及川","前川","湯浅","村上","坂本","島本","木浪","西","秋山","馬場","青柳","伊藤将","ガンケル","ロハスJr.","スアレス","マルテ","サンズ","ノイジー","ミエセス","ビーズリー","ゲラ","桐敷","島田","アルカンタラ","渡邉","ウィルカーソン","門別","浜地","漆原","関川","岡田","今岡","デュプランティエ","石井","立石","バース","掛布","田淵","江夏","西岡","植田","吉田","藤村","榎田","平野恵","赤星","真弓","久保田","ドリス","メッセンジャー","下村","岩田","桧山","能見","スタンリッジ","今朝丮","伊原","森木","小野寺","富田","大竹耕","豊田","坪井","大山","坂本","立石","藤川","及川","前川","湯浅","村上","大竹","小幡","大山",
+])].sort((a,b)=>a.localeCompare(b,'ja'));
+
+// オートコンプリート関数
+window.acInput = function(input, listId) {
+  const val = input.value.trim();
+  const list = document.getElementById(listId);
+  if (!list) return;
+  if (!val) { list.classList.remove('show'); list.innerHTML=''; return; }
+  const matches = PLAYERS.filter(p => p.includes(val)).slice(0, 10);
+  if (!matches.length) { list.classList.remove('show'); list.innerHTML=''; return; }
+  list.innerHTML = matches.map(p => {
+    const hl = p.replace(val, `<mark>${val}</mark>`);
+    return `<div class="ac-item" onmousedown="acSelect('${listId}','${p}')">${hl}</div>`;
+  }).join('');
+  list.classList.add('show');
+};
+window.acSelect = function(listId, val) {
+  const list = document.getElementById(listId);
+  // listIdからinputIdを逆引き: ac-f-c → f-c
+  const inputId = listId.replace(/^ac-/, '');
+  const input = document.getElementById(inputId);
+  if (input) input.value = val;
+  if (list) { list.classList.remove('show'); list.innerHTML=''; }
+};
+window.acHide = function(listId) {
+  const list = document.getElementById(listId);
+  if (list) { list.classList.remove('show'); list.innerHTML=''; }
+};
+const RANKS = ['','S','A','B','C','D'];
+const TYPES = ['','通常','覚醒','TS','EX','セレクション','WS','OB','アニバ','ジュニア','B9','侍ジャパン'];
+const TRAJECTORIES = ['','アーチスト','パワーヒッター','高弾道','中弾道','ラインドライブ','低弾道','グラウンダー'];
+const YEARS = ['',...Array.from({length:11},(_,i)=>`${2026-i}年`)];
+const SERIES = ['','Series1','Series2'];
 
 const posMap = [
-  {pos:'捕手',tag:'C',ph:'例：甲斐拓也',id:'c'},
-  {pos:'一塁手',tag:'1B',ph:'例：中田翔',id:'1b'},
-  {pos:'二塁手',tag:'2B',ph:'例：山田哲人',id:'2b'},
-  {pos:'三塁手',tag:'3B',ph:'例：村上宗隆',id:'3b'},
-  {pos:'遊撃手',tag:'SS',ph:'例：源田壮亮',id:'ss'},
-  {pos:'左翼手',tag:'LF',ph:'例：近本光司',id:'lf'},
-  {pos:'中堅手',tag:'CF',ph:'例：柳田悠岐',id:'cf'},
-  {pos:'右翼手',tag:'RF',ph:'例：吉田正尚',id:'rf'},
+  {pos:'捕手',tag:'C',ph:'例：甲斐拓也',id:'c',batter:true},
+  {pos:'一塁手',tag:'1B',ph:'例：中田翔',id:'1b',batter:true},
+  {pos:'二塁手',tag:'2B',ph:'例：山田哲人',id:'2b',batter:true},
+  {pos:'三塁手',tag:'3B',ph:'例：村上宗隆',id:'3b',batter:true},
+  {pos:'遊撃手',tag:'SS',ph:'例：源田壮亮',id:'ss',batter:true},
+  {pos:'左翼手',tag:'LF',ph:'例：近本光司',id:'lf',batter:true},
+  {pos:'中堅手',tag:'CF',ph:'例：柳田悠岐',id:'cf',batter:true},
+  {pos:'右翼手',tag:'RF',ph:'例：吉田正尚',id:'rf',batter:true},
 ];
 const pitMap = [
-  {pos:'先発',tag:'SP',ph:'例：山本由伸',id:'sp'},
-  {pos:'中継ぎ',tag:'RP',ph:'例：宇田川優希',id:'rp'},
-  {pos:'抑え',tag:'CL',ph:'例：栗林良吏',id:'cl'},
+  {pos:'先発',tag:'SP',ph:'例：山本由伸',id:'sp',batter:false},
+  {pos:'中継ぎ',tag:'RP',ph:'例：宇田川優希',id:'rp',batter:false},
+  {pos:'抑え',tag:'CL',ph:'例：栗林良吏',id:'cl',batter:false},
 ];
 const allPos = [...posMap, ...pitMap];
 
-function makeSelect(id, opts, label) {
-  return `<div class="select-wrap">
-    <div class="select-label">${label}</div>
-    <select class="player-select" id="${id}">
-      ${opts.map(o=>`<option value="${o}">${o||'選択'}</option>`).join('')}
-    </select>
-  </div>`;
+function makeOpts(arr, sel='') {
+  return arr.map(o=>`<option value="${o}"${o===sel?' selected':''}>${o||'選択'}</option>`).join('');
 }
 
 function playerFieldHTML(p, prefix='f', data={}) {
-  const nameVal = data[p.id+'_name']||'';
-  const rankVal = data[p.id+'_rank']||'';
-  const typeVal = data[p.id+'_type']||'';
-  const yearVal = data[p.id+'_year']||'';
-  const seriesVal = data[p.id+'_series']||'';
+  const nameVal=data[p.id+'_name']||'';
+  const teamVal=data[p.id+'_team']||'';
+  const rankVal=data[p.id+'_rank']||'';
+  const typeVal=data[p.id+'_type']||'';
+  const trajVal=data[p.id+'_trajectory']||'';
+  const yearVal=data[p.id+'_year']||'';
+  const seriesVal=data[p.id+'_series']||'';
+
+  const row1 = p.batter ? `
+    <div class="player-selects-3" style="margin-bottom:8px">
+      <div class="select-wrap"><div class="select-label">球団</div><select class="player-select" id="${prefix}-team-${p.id}"><option value="">球団</option>${makeOpts(TEAMS.slice(1),teamVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">ランク</div><select class="player-select" id="${prefix}-rank-${p.id}"><option value="">ランク</option>${makeOpts(RANKS.slice(1),rankVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">種類</div><select class="player-select" id="${prefix}-type-${p.id}"><option value="">種類</option>${makeOpts(TYPES.slice(1),typeVal)}</select></div>
+    </div>
+    <div class="player-selects-3">
+      <div class="select-wrap"><div class="select-label">弾道</div><select class="player-select" id="${prefix}-trajectory-${p.id}"><option value="">弾道</option>${makeOpts(TRAJECTORIES.slice(1),trajVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">年度</div><select class="player-select" id="${prefix}-year-${p.id}"><option value="">年度</option>${makeOpts(YEARS.slice(1),yearVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">シリーズ</div><select class="player-select" id="${prefix}-series-${p.id}"><option value="">Series</option>${makeOpts(SERIES.slice(1),seriesVal)}</select></div>
+    </div>` : `
+    <div class="player-selects-4">
+      <div class="select-wrap"><div class="select-label">球団</div><select class="player-select" id="${prefix}-team-${p.id}"><option value="">球団</option>${makeOpts(TEAMS.slice(1),teamVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">ランク</div><select class="player-select" id="${prefix}-rank-${p.id}"><option value="">ランク</option>${makeOpts(RANKS.slice(1),rankVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">年度</div><select class="player-select" id="${prefix}-year-${p.id}"><option value="">年度</option>${makeOpts(YEARS.slice(1),yearVal)}</select></div>
+      <div class="select-wrap"><div class="select-label">シリーズ</div><select class="player-select" id="${prefix}-series-${p.id}"><option value="">Series</option>${makeOpts(SERIES.slice(1),seriesVal)}</select></div>
+    </div>`;
+
   return `<div class="player-field">
-    <div class="player-field-header">
-      <span class="pos-tag">${p.tag}</span>
-      <span class="pos-name">${p.pos}</span>
+    <div class="player-field-header"><span class="pos-tag">${p.tag}</span><span class="pos-name">${p.pos}</span></div>
+    <div class="ac-wrap">
+      <input class="player-name-input" type="text" id="${prefix}-${p.id}" placeholder="${p.ph}" value="${nameVal}" autocomplete="off" oninput="acInput(this,'ac-${prefix}-${p.id}')" onblur="setTimeout(()=>acHide('ac-${prefix}-${p.id}'),200)" onfocus="acInput(this,'ac-${prefix}-${p.id}')">
+      <div class="ac-list" id="ac-${prefix}-${p.id}"></div>
     </div>
-    <input class="player-name-input" type="text" id="${prefix}-${p.id}" placeholder="${p.ph}" value="${nameVal}">
-    <div class="player-selects" style="margin-bottom:8px">
-      ${makeSelect(`${prefix}-rank-${p.id}`, RANKS.map(r=>r||'ランク'), 'ランク').replace(`<option value="${rankVal}">`, `<option value="${rankVal}" selected>`)}
-      ${makeSelect(`${prefix}-type-${p.id}`, TYPES.map(t=>t||'種類'), '種類').replace(`<option value="${typeVal}">`, `<option value="${typeVal}" selected>`)}
-    </div>
-    <div class="player-selects">
-      ${makeSelect(`${prefix}-year-${p.id}`, YEARS.map(y=>y||'年度'), '年度').replace(`<option value="${yearVal}">`, `<option value="${yearVal}" selected>`)}
-      ${makeSelect(`${prefix}-series-${p.id}`, SERIES.map(s=>s||'Series'), 'シリーズ').replace(`<option value="${seriesVal}">`, `<option value="${seriesVal}" selected>`)}
-    </div>
+    ${row1}
   </div>`;
 }
 
-// セレクトの初期値を正確にセット
-function setSelectValue(id, val) {
-  const el = document.getElementById(id);
-  if (el && val) el.value = val;
-}
-
 function buildFields(container, arr, prefix='f', data={}) {
-  container.innerHTML = arr.map(p=>playerFieldHTML(p, prefix, data)).join('');
-  // 初期値セット
-  arr.forEach(p => {
-    setSelectValue(`${prefix}-rank-${p.id}`, data[p.id+'_rank']||'');
-    setSelectValue(`${prefix}-type-${p.id}`, data[p.id+'_type']||'');
-    setSelectValue(`${prefix}-year-${p.id}`, data[p.id+'_year']||'');
-    setSelectValue(`${prefix}-series-${p.id}`, data[p.id+'_series']||'');
-  });
+  container.innerHTML = arr.map(p=>playerFieldHTML(p,prefix,data)).join('');
 }
 
 buildFields(document.getElementById('submit-fields'), posMap);
 buildFields(document.getElementById('submit-pitcher-fields'), pitMap);
 
-let currentPos = '捕手';
-let currentUser = null;
-let editingDocId = null;
-let totalOrderCount = 0;
+function getRankBadge(rank) {
+  if (!rank) return '';
+  return `<span class="rank-badge ${RANK_CLASS[rank]||''}">${rank}ランク</span>`;
+}
+function getTrajectoryBadge(traj) {
+  if (!traj) return '';
+  return `<span class="rank-badge ${TRAJECTORY_CLASS[traj]||'rank-badge-gray'}">${traj}</span>`;
+}
+
+let currentPos='捕手', currentUser=null, editingDocId=null, totalOrderCount=0;
 
 onAuthStateChanged(auth, async user => {
   currentUser = user;
   if (user) {
-    document.getElementById('user-chip').style.display = 'flex';
-    document.getElementById('user-name').textContent = user.displayName || user.email;
-    document.getElementById('auth-btn').textContent = 'ログアウト';
-    document.getElementById('auth-btn').onclick = doLogout;
-    document.getElementById('auth-btn').className = 'btn btn-ghost';
-    document.getElementById('login-gate-submit').style.display = 'none';
-    document.getElementById('login-gate-myorder').style.display = 'none';
-    document.getElementById('myorder-content').style.display = 'block';
-    if (user.displayName) document.getElementById('f-username').value = user.displayName;
+    document.getElementById('user-chip').style.display='flex';
+    document.getElementById('user-name').textContent=user.displayName||'ユーザー';
+    document.getElementById('auth-btn').textContent='ログアウト';
+    document.getElementById('auth-btn').onclick=doLogout;
+    document.getElementById('auth-btn').className='btn btn-ghost';
+    document.getElementById('login-gate-submit').style.display='none';
+    document.getElementById('login-gate-myorder').style.display='none';
+    document.getElementById('myorder-content').style.display='block';
+    if(user.displayName) document.getElementById('f-username').value=user.displayName;
     await checkExistingOrder();
     loadMyOrders();
   } else {
-    document.getElementById('user-chip').style.display = 'none';
-    document.getElementById('auth-btn').textContent = 'ログイン';
-    document.getElementById('auth-btn').onclick = showAuthModal;
-    document.getElementById('auth-btn').className = 'btn btn-primary';
-    document.getElementById('login-gate-submit').style.display = 'block';
-    document.getElementById('login-gate-myorder').style.display = 'block';
-    document.getElementById('already-submitted').style.display = 'none';
-    document.getElementById('submit-form').style.display = 'none';
-    document.getElementById('myorder-content').style.display = 'none';
+    document.getElementById('user-chip').style.display='none';
+    document.getElementById('auth-btn').textContent='ログイン';
+    document.getElementById('auth-btn').onclick=showAuthModal;
+    document.getElementById('auth-btn').className='btn btn-primary';
+    document.getElementById('login-gate-submit').style.display='block';
+    document.getElementById('login-gate-myorder').style.display='block';
+    document.getElementById('already-submitted').style.display='none';
+    document.getElementById('submit-form').style.display='none';
+    document.getElementById('myorder-content').style.display='none';
   }
 });
 
 async function checkExistingOrder() {
-  if (!currentUser) return;
-  const q = query(collection(db,'orders'), where('uid','==',currentUser.uid));
-  const snap = await getDocs(q);
-  if (snap.empty) {
-    document.getElementById('already-submitted').style.display = 'none';
-    document.getElementById('submit-form').style.display = 'block';
+  if(!currentUser) return;
+  const q=query(collection(db,'orders'),where('uid','==',currentUser.uid));
+  const snap=await getDocs(q);
+  if(snap.empty){
+    document.getElementById('already-submitted').style.display='none';
+    document.getElementById('submit-form').style.display='block';
   } else {
-    document.getElementById('already-submitted').style.display = 'block';
-    document.getElementById('submit-form').style.display = 'none';
+    document.getElementById('already-submitted').style.display='block';
+    document.getElementById('submit-form').style.display='none';
+  }
+}
+
+// ランキング集計をrankingsコレクションに保存（スケーラビリティ対策）
+async function rebuildRankings(ordersSnap) {
+  // 全ポジションの集計を一度に行う
+  const rankData = {};
+  allPos.forEach(p => { rankData[p.pos] = {}; });
+
+  ordersSnap.forEach(d => {
+    const data = d.data();
+    allPos.forEach(p => {
+      const name = data[p.id+'_name']?.trim();
+      if (!name) return;
+      if (!rankData[p.pos][name]) {
+        rankData[p.pos][name] = {
+          count: 0,
+          team: data[p.id+'_team']||'',
+          rank: data[p.id+'_rank']||'',
+          type: data[p.id+'_type']||'',
+          trajectory: data[p.id+'_trajectory']||'',
+          year: data[p.id+'_year']||'',
+          series: data[p.id+'_series']||'',
+        };
+      }
+      rankData[p.pos][name].count++;
+    });
+  });
+
+  // rankingsコレクションに保存
+  for (const pos of Object.keys(rankData)) {
+    const posId = pos.replace(/\s/g,'_');
+    try {
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(async ({setDoc, doc: fsDoc}) => {
+        await setDoc(fsDoc(db,'rankings', posId), {
+          pos,
+          players: rankData[pos],
+          total: ordersSnap.size,
+          updatedAt: new Date().toISOString(),
+        });
+      });
+    } catch(e) { /* silent */ }
   }
 }
 
 async function loadRanking(pos) {
-  document.getElementById('ranking-list').innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  document.getElementById('ranking-list').innerHTML='<div class="loading"><div class="spinner"></div>読み込み中...</div>';
   try {
-    const snap = await getDocs(collection(db,'orders'));
-    totalOrderCount = snap.size;
-    document.getElementById('total-orders').textContent = snap.size;
-    const counts = {};
-    snap.forEach(d => {
-      const name = d.data()[pos+'_name'];
-      if (name?.trim()) {
-        const k = name.trim();
-        if (!counts[k]) counts[k] = {count:0, rank:d.data()[pos+'_rank']||'', type:d.data()[pos+'_type']||'', year:d.data()[pos+'_year']||'', series:d.data()[pos+'_series']||''};
-        counts[k].count++;
-      }
-    });
-    try { const us=await getDocs(collection(db,'users')); document.getElementById('total-users').textContent=us.size; } catch(e){}
-    const sorted = Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
-    if (!sorted.length) { document.getElementById('ranking-list').innerHTML='<div class="empty">まだ投稿がありません。<br>最初のオーダーを投稿してみよう！🔥</div>'; return; }
-    const max=sorted[0][1].count, total=snap.size;
-    document.getElementById('ranking-list').innerHTML = sorted.map(([name,info],i)=>{
-      const r=i+1, pct=total>0?Math.round(info.count/total*100):0, bw=Math.round(info.count/max*100);
+    // まずrankingsコレクションから高速取得を試みる
+    const posId = pos.replace(/\s/g,'_');
+    let counts = {}, total = 0;
+
+    try {
+      const { getDoc: fsGetDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const rankSnap = await fsGetDoc(fsDoc(db,'rankings', posId));
+      if (rankSnap.exists()) {
+        const rdata = rankSnap.data();
+        counts = rdata.players || {};
+        total = rdata.total || 0;
+        document.getElementById('total-users') && (async()=>{
+          try{const us=await getDocs(collection(db,'users'));document.getElementById('total-users').textContent=us.size;}catch(e){}
+        })();
+      } else { throw new Error('no cache'); }
+    } catch(e) {
+      // fallback: 全オーダー取得
+      const snap = await getDocs(collection(db,'orders'));
+      total = snap.size;
+      snap.forEach(d=>{
+        const name=d.data()[pos+'_name']?.trim();
+        if(name){
+          if(!counts[name]) counts[name]={count:0,team:d.data()[pos+'_team']||'',rank:d.data()[pos+'_rank']||'',type:d.data()[pos+'_type']||'',trajectory:d.data()[pos+'_trajectory']||'',year:d.data()[pos+'_year']||'',series:d.data()[pos+'_series']||''};
+          counts[name].count++;
+        }
+      });
+      try{const us=await getDocs(collection(db,'users'));document.getElementById('total-users').textContent=us.size;}catch(e2){}
+    }
+
+    const sorted=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
+    if(!sorted.length){document.getElementById('ranking-list').innerHTML='<div class="empty">まだ投稿がありません。<br>最初のオーダーを投稿してみよう！🔥</div>';return;}
+    const max=sorted[0][1].count;
+    const isBatter=posMap.some(p=>p.pos===pos);
+    document.getElementById('ranking-list').innerHTML=sorted.map(([name,info],i)=>{
+      const r=i+1,pct=total>0?Math.round(info.count/total*100):0,bw=Math.round(info.count/max*100);
       const nc=r===1?'n1':r===2?'n2':r===3?'n3':'nX';
       const tc=r===1?'top1':r===2?'top2':r===3?'top3':'';
-      const seriesText = [info.year, info.series].filter(Boolean).join(' ');
+      const seriesText=[info.year,info.series].filter(Boolean).join(' ');
       return `<div class="rank-item ${tc}" style="animation-delay:${i*0.05}s">
         <div class="rank-num ${nc}">${r}</div>
         <div class="rank-info">
           <div class="rank-name">${name}</div>
           <div class="rank-badges">
-            ${info.rank?`<span class="rank-badge orange">${info.rank}ランク</span>`:''}
-            ${info.type?`<span class="rank-badge">${info.type}</span>`:''}
-            ${seriesText?`<span class="rank-badge">${seriesText}</span>`:''}
+            ${info.team?`<span class="rank-badge-gray">${info.team}</span>`:''}
+            ${getRankBadge(info.rank)}
+            ${info.type?`<span class="rank-badge-gray">${info.type}</span>`:''}
+            ${isBatter?getTrajectoryBadge(info.trajectory):''}
+            ${seriesText?`<span class="rank-badge-gray">${seriesText}</span>`:''}
           </div>
         </div>
         <div class="rank-right">
@@ -770,53 +957,47 @@ async function loadRanking(pos) {
         </div>
       </div>`;
     }).join('');
-  } catch(e) { document.getElementById('ranking-list').innerHTML='<div class="empty">読み込みに失敗しました。</div>'; }
+  } catch(e){document.getElementById('ranking-list').innerHTML='<div class="empty">読み込みに失敗しました。</div>';}
 }
 
 async function loadMyOrders() {
-  if (!currentUser) return;
-  const el = document.getElementById('myorder-list');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  if(!currentUser) return;
+  const el=document.getElementById('myorder-list');
+  el.innerHTML='<div class="loading"><div class="spinner"></div>読み込み中...</div>';
   try {
-    const q = query(collection(db,'orders'), where('uid','==',currentUser.uid));
-    const snap = await getDocs(q);
-    if (snap.empty) { el.innerHTML='<div class="empty">まだオーダーを投稿していません。</div>'; return; }
-
-    // 全オーダーを取得して使用人数を計算
-    const allSnap = await getDocs(collection(db,'orders'));
-    totalOrderCount = allSnap.size;
-    const usageCounts = {};
-    allSnap.forEach(d => {
-      allPos.forEach(p => {
-        const name = d.data()[p.id+'_name'];
-        if (name?.trim()) {
-          const key = `${p.id}:${name.trim()}`;
-          usageCounts[key] = (usageCounts[key]||0) + 1;
-        }
+    const q=query(collection(db,'orders'),where('uid','==',currentUser.uid));
+    const snap=await getDocs(q);
+    if(snap.empty){el.innerHTML='<div class="empty">まだオーダーを投稿していません。</div>';return;}
+    const allSnap=await getDocs(collection(db,'orders'));
+    totalOrderCount=allSnap.size;
+    const usageCounts={};
+    allSnap.forEach(d=>{
+      allPos.forEach(p=>{
+        const name=d.data()[p.id+'_name'];
+        if(name?.trim()){const key=`${p.id}:${name.trim()}`;usageCounts[key]=(usageCounts[key]||0)+1;}
       });
     });
-
-    el.innerHTML = snap.docs.map(ds => {
-      const d = ds.data();
-      const rows = allPos.map(p => {
-        const name = d[p.id+'_name'];
-        if (!name) return '';
-        const rank = d[p.id+'_rank']||'';
-        const type = d[p.id+'_type']||'';
-        const year = d[p.id+'_year']||'';
-        const series = d[p.id+'_series']||'';
-        const seriesText = [year, series].filter(Boolean).join(' ');
-        const usageKey = `${p.id}:${name.trim()}`;
-        const usage = usageCounts[usageKey]||0;
-        const usagePct = totalOrderCount>0?Math.round(usage/totalOrderCount*100):0;
-        const barW = totalOrderCount>0?Math.round(usage/totalOrderCount*100):0;
+    el.innerHTML=snap.docs.map(ds=>{
+      const d=ds.data();
+      const rows=allPos.map(p=>{
+        const name=d[p.id+'_name'];
+        if(!name) return '';
+        const team=d[p.id+'_team']||'',rank=d[p.id+'_rank']||'',type=d[p.id+'_type']||'',traj=d[p.id+'_trajectory']||'';
+        const year=d[p.id+'_year']||'',series=d[p.id+'_series']||'';
+        const seriesText=[year,series].filter(Boolean).join(' ');
+        const usageKey=`${p.id}:${name.trim()}`;
+        const usage=usageCounts[usageKey]||0;
+        const usagePct=totalOrderCount>0?Math.round(usage/totalOrderCount*100):0;
+        const barW=totalOrderCount>0?Math.round(usage/totalOrderCount*100):0;
         return `<div class="my-order-row">
           <div class="my-order-tag">${p.tag}</div>
           <div class="my-order-info">
             <div class="my-order-player">${name}</div>
             <div class="my-order-badges">
-              ${rank?`<span class="my-order-badge">${rank}ランク</span>`:''}
-              ${type?`<span class="my-order-badge">${type}</span>`:''}
+              ${team?`<span class="my-order-badge" style="background:#f1f5f9;border:1px solid #cbd5e1;color:#475569">${team}</span>`:''}
+              ${rank?`<span class="my-order-badge ${RANK_CLASS[rank]||''}">${rank}ランク</span>`:''}
+              ${type?`<span class="my-order-badge" style="background:#f1f5f9;border:1px solid #cbd5e1;color:#475569">${type}</span>`:''}
+              ${p.batter&&traj?`<span class="my-order-badge ${TRAJECTORY_CLASS[traj]||''}">${traj}</span>`:''}
             </div>
             ${seriesText?`<div class="my-order-series">${seriesText}</div>`:''}
             <div class="my-order-usage">
@@ -826,83 +1007,108 @@ async function loadMyOrders() {
           </div>
         </div>`;
       }).filter(Boolean).join('');
+
+      // ⑥ 更新日時
+      const updatedAt = d.updatedAt?.toDate?.() || d.createdAt?.toDate?.();
+      const dateStr = updatedAt ? updatedAt.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'}) : '';
+
+      // ⑤ シェア用テキスト生成
+      const shareText = allPos.map(p=>{
+        const name=d[p.id+'_name'];
+        if(!name) return '';
+        return `${p.tag}:${name}`;
+      }).filter(Boolean).join(' ');
+
       return `<div class="my-card">
         <div class="my-card-header">
-          <div class="my-card-name">${d.username||'匿名'}</div>
+          <div class="my-card-name">${d.username||'匿名'}${dateStr?`<span style="font-size:10px;color:var(--text-dim);font-weight:400;margin-left:6px">${dateStr}更新</span>`:''}</div>
           <div class="my-card-actions">
-            <button class="action-btn action-edit" onclick="showEditModal('${ds.id}')">編集</button>
-            <button class="action-btn action-del" onclick="deleteOrder('${ds.id}')">削除</button>
+            <button class="action-btn" onclick="showEditModal('${ds.id}')">編集</button>
+            <button class="action-btn" onclick="deleteOrder('${ds.id}')">削除</button>
           </div>
         </div>
-        <div class="my-card-body"><div class="my-order-list-inner">${rows}</div></div>
+        <div class="my-card-body">
+          <div class="my-order-list-inner">${rows}</div>
+          <button onclick="shareToX('${shareText.replace(/'/g,'')}')" style="width:100%;margin-top:12px;padding:10px;background:#000;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Xでシェアする
+          </button>
+        </div>
       </div>`;
     }).join('');
-  } catch(e) { el.innerHTML='<div class="empty">読み込みに失敗しました。</div>'; }
+  } catch(e){el.innerHTML='<div class="empty">読み込みに失敗しました。</div>';}
 }
 
 window.showEditModal = async function(docId) {
-  editingDocId = docId;
-  const ds = await getDoc(doc(db,'orders',docId));
-  if (!ds.exists()||ds.data().uid!==currentUser?.uid) { alert('編集権限がありません'); return; }
-  const d = ds.data();
-  const content = document.getElementById('edit-form-content');
-  content.innerHTML = `
+  editingDocId=docId;
+  const ds=await getDoc(doc(db,'orders',docId));
+  if(!ds.exists()||ds.data().uid!==currentUser?.uid){alert('編集権限がありません');return;}
+  const d=ds.data();
+  document.getElementById('edit-form-content').innerHTML=`
     <div class="section-card" style="margin-bottom:12px"><div class="section-card-title">投稿者情報</div>
-      <label class="form-label">表示名</label>
-      <input class="player-name-input" type="text" id="ef-username" value="${d.username||''}" style="margin-bottom:0">
+      <input class="player-name-input" type="text" id="ef-username" value="${d.username||''}" placeholder="表示名" style="margin-bottom:0">
     </div>
     <div class="section-card" style="margin-bottom:12px"><div class="section-card-title">野手オーダー</div><div id="edit-pos-fields"></div></div>
     <div class="section-card" style="margin-bottom:12px"><div class="section-card-title">投手オーダー</div><div id="edit-pit-fields"></div></div>`;
-  buildFields(document.getElementById('edit-pos-fields'), posMap, 'ef', d);
-  buildFields(document.getElementById('edit-pit-fields'), pitMap, 'ef', d);
+  buildFields(document.getElementById('edit-pos-fields'),posMap,'ef',d);
+  buildFields(document.getElementById('edit-pit-fields'),pitMap,'ef',d);
   document.getElementById('edit-modal').classList.add('show');
 };
-window.hideEditModal = function() { document.getElementById('edit-modal').classList.remove('show'); editingDocId=null; };
+window.hideEditModal=function(){document.getElementById('edit-modal').classList.remove('show');editingDocId=null;};
 
-window.saveEdit = async function() {
-  if (!editingDocId||!currentUser) return;
+window.saveEdit=async function(){
+  if(!editingDocId||!currentUser) return;
   const btn=document.getElementById('edit-save-btn');
-  btn.disabled=true; btn.textContent='保存中...';
+  btn.disabled=true;btn.textContent='保存中...';
   try {
-    const data={username:document.getElementById('ef-username').value.trim()};
+    const data={username:document.getElementById('ef-username').value.trim(), updatedAt:serverTimestamp()};
     allPos.forEach(p=>{
       data[p.id+'_name']=document.getElementById('ef-'+p.id)?.value.trim()||'';
+      data[p.id+'_team']=document.getElementById(`ef-team-${p.id}`)?.value||'';
       data[p.id+'_rank']=document.getElementById(`ef-rank-${p.id}`)?.value||'';
       data[p.id+'_type']=document.getElementById(`ef-type-${p.id}`)?.value||'';
+      if(p.batter) data[p.id+'_trajectory']=document.getElementById(`ef-trajectory-${p.id}`)?.value||'';
       data[p.id+'_year']=document.getElementById(`ef-year-${p.id}`)?.value||'';
       data[p.id+'_series']=document.getElementById(`ef-series-${p.id}`)?.value||'';
     });
     await updateDoc(doc(db,'orders',editingDocId),data);
-    hideEditModal(); loadMyOrders(); loadRanking(currentPos);
-  } catch(e) { const m=document.getElementById('edit-error-msg'); m.style.display='block'; m.textContent='保存に失敗しました。'; }
-  btn.disabled=false; btn.textContent='💾 変更を保存する';
+    // ランキング再集計
+    const allSnap = await getDocs(collection(db,'orders'));
+    await rebuildRankings(allSnap);
+    hideEditModal();loadMyOrders();loadRanking(currentPos);
+  } catch(e){const m=document.getElementById('edit-error-msg');m.style.display='block';m.textContent='保存に失敗しました。';}
+  btn.disabled=false;btn.textContent='💾 変更を保存する';
 };
 
-window.deleteOrder = async function(docId) {
-  if (!confirm('このオーダーを削除しますか？')) return;
+window.deleteOrder=async function(docId){
+  if(!confirm('このオーダーを削除しますか？')) return;
   try {
     const ds=await getDoc(doc(db,'orders',docId));
     if(ds.data().uid!==currentUser?.uid){alert('削除権限がありません');return;}
     await deleteDoc(doc(db,'orders',docId));
-    loadMyOrders(); loadRanking(currentPos); await checkExistingOrder();
+    // ランキング再集計
+    const allSnap = await getDocs(collection(db,'orders'));
+    await rebuildRankings(allSnap);
+    loadMyOrders();loadRanking(currentPos);await checkExistingOrder();
   } catch(e){alert('削除に失敗しました。');}
 };
 
-window.changePos = function(pos,btn) {
+window.changePos=function(pos,btn){
   currentPos=pos;
   document.querySelectorAll('.pos-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   loadRanking(pos);
 };
 
-window.switchPanel = function(panel) {
-  ['ranking','submit','about'].forEach(p=>{
+window.switchPanel=function(panel){
+  ['ranking','submit','about','privacy','terms'].forEach(p=>{
     document.getElementById('panel-'+p).classList.toggle('active',p===panel);
-    document.getElementById('nav-'+p)?.classList.toggle('active',p===panel);
+    const nav=document.getElementById('nav-'+p);
+    if(nav) nav.classList.toggle('active',p===panel);
   });
 };
 
-window.setSubmitMyTab = function(tab) {
+window.setSubmitMyTab=function(tab){
   ['submit','myorder'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
     document.getElementById('content-'+t).classList.toggle('active',t===tab);
@@ -910,42 +1116,83 @@ window.setSubmitMyTab = function(tab) {
   if(tab==='myorder'&&currentUser) loadMyOrders();
 };
 
-window.showAuthModal = function() { document.getElementById('auth-modal').classList.add('show'); };
-window.hideAuthModal = function() { document.getElementById('auth-modal').classList.remove('show'); };
-window.switchAuthTab = function(tab) {
+window.showAuthModal=function(){document.getElementById('auth-modal').classList.add('show');};
+window.hideAuthModal=function(){document.getElementById('auth-modal').classList.remove('show');};
+window.switchAuthTab=function(tab){
   document.querySelectorAll('.modal-tab').forEach((t,i)=>t.classList.toggle('active',['login','register'][i]===tab));
   document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
   document.getElementById('auth-register').style.display=tab==='register'?'block':'none';
 };
 
-window.doLogin = async function() {
+// ニックネームをダミーメールに変換してFirebase認証
+function nameToEmail(name){return `${encodeURIComponent(name).toLowerCase().replace(/%/g,'x')}@realtai.app`;}
+
+window.doLogin=async function(){
   const btn=document.getElementById('login-btn'),err=document.getElementById('login-error');
-  btn.disabled=true; btn.textContent='ログイン中...';
-  try { await signInWithEmailAndPassword(auth,document.getElementById('login-email').value,document.getElementById('login-password').value); hideAuthModal(); }
-  catch(e){err.style.display='block';err.textContent='メールアドレスまたはパスワードが正しくありません';}
-  btn.disabled=false; btn.textContent='ログイン';
+  const name=document.getElementById('login-name').value.trim();
+  const pass=document.getElementById('login-password').value;
+  if(!name){err.style.display='block';err.textContent='ニックネームを入力してください';return;}
+  btn.disabled=true;btn.textContent='ログイン中...';
+  try{await signInWithEmailAndPassword(auth,nameToEmail(name),pass);hideAuthModal();}
+  catch(e){err.style.display='block';err.textContent='ニックネームまたはパスワードが正しくありません';}
+  btn.disabled=false;btn.textContent='ログイン';
 };
 
-window.doRegister = async function() {
+window.doRegister=async function(){
   const name=document.getElementById('reg-name').value.trim();
+  const pass=document.getElementById('reg-password').value;
+  const email=document.getElementById('reg-email').value.trim();
   const btn=document.getElementById('reg-btn'),err=document.getElementById('reg-error');
   if(!name){err.style.display='block';err.textContent='ニックネームを入力してください';return;}
-  btn.disabled=true; btn.textContent='登録中...';
-  try {
-    const cred=await createUserWithEmailAndPassword(auth,document.getElementById('reg-email').value,document.getElementById('reg-password').value);
+  if(pass.length<8){err.style.display='block';err.textContent='パスワードは8文字以上にしてください';return;}
+  btn.disabled=true;btn.textContent='登録中...';
+  // メールアドレスが入力されていればそれを使用、なければダミーメールを生成
+  const authEmail=email||nameToEmail(name);
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,authEmail,pass);
     await updateProfile(cred.user,{displayName:name});
     await addDoc(collection(db,'users'),{uid:cred.user.uid,name,createdAt:serverTimestamp()});
     hideAuthModal();
   } catch(e){
     err.style.display='block';
-    err.textContent=e.code==='auth/email-already-in-use'?'このメールアドレスはすでに登録されています':e.code==='auth/weak-password'?'パスワードは8文字以上にしてください':'登録に失敗しました';
+    err.textContent=e.code==='auth/email-already-in-use'?'このニックネームはすでに使用されています':e.code==='auth/weak-password'?'パスワードは8文字以上にしてください':'登録に失敗しました';
   }
-  btn.disabled=false; btn.textContent='登録する';
+  btn.disabled=false;btn.textContent='登録する';
 };
 
-window.doLogout = async function() { await signOut(auth); };
+window.doLogout=async function(){await signOut(auth);};
 
-window.submitOrder = async function() {
+// ① パスワードリセット
+window.doResetPassword=async function(){
+  const email=document.getElementById('reset-email').value.trim();
+  const msg=document.getElementById('reset-msg');
+  if(!email){msg.style.display='block';msg.textContent='メールアドレスを入力してください';return;}
+  try{
+    const {sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    await sendPasswordResetEmail(auth,email);
+    msg.style.display='block';msg.textContent='✅ リセットメールを送信しました';
+  }catch(e){msg.style.display='block';msg.textContent='送信に失敗しました。メールアドレスを確認してください';}
+};
+
+// ④ ランキング検索フィルター
+let cachedRankingItems = [];
+window.filterRanking=function(val){
+  const list=document.getElementById('ranking-list');
+  const items=list.querySelectorAll('.rank-item');
+  if(!val.trim()){items.forEach(el=>el.style.display='');return;}
+  items.forEach(el=>{
+    const name=el.querySelector('.rank-name')?.textContent||'';
+    el.style.display=name.includes(val)?'':'none';
+  });
+};
+
+// ⑤ Xシェア機能
+window.shareToX=function(orderText){
+  const text=encodeURIComponent(`みんなのリアタイオーダー\n${orderText}\n#プロスピA #リアタイ\nhttps://benevolent-gecko-adfe3a.netlify.app`);
+  window.open(`https://twitter.com/intent/tweet?text=${text}`,'_blank');
+};
+
+window.submitOrder=async function(){
   if(!currentUser){showAuthModal();return;}
   const existQ=query(collection(db,'orders'),where('uid','==',currentUser.uid));
   const existSnap=await getDocs(existQ);
@@ -956,8 +1203,10 @@ window.submitOrder = async function() {
     const name=document.getElementById('f-'+p.id)?.value.trim();
     if(name){
       data[p.id+'_name']=name;
+      data[p.id+'_team']=document.getElementById(`f-team-${p.id}`)?.value||'';
       data[p.id+'_rank']=document.getElementById(`f-rank-${p.id}`)?.value||'';
       data[p.id+'_type']=document.getElementById(`f-type-${p.id}`)?.value||'';
+      if(p.batter) data[p.id+'_trajectory']=document.getElementById(`f-trajectory-${p.id}`)?.value||'';
       data[p.id+'_year']=document.getElementById(`f-year-${p.id}`)?.value||'';
       data[p.id+'_series']=document.getElementById(`f-series-${p.id}`)?.value||'';
       filled++;
@@ -965,18 +1214,26 @@ window.submitOrder = async function() {
   });
   if(filled<3){alert('3ポジション以上入力してください');return;}
   const btn=document.getElementById('submit-btn');
-  btn.disabled=true; btn.textContent='投稿中...';
-  try {
+  btn.disabled=true;btn.textContent='投稿中...';
+  try{
     await addDoc(collection(db,'orders'),data);
+    // ランキング再集計
+    const allSnap = await getDocs(collection(db,'orders'));
+    await rebuildRankings(allSnap);
+    // ③ 投稿完了後マイオーダーへ遷移
+    setTimeout(()=>{
+      switchPanel('submit');
+      setSubmitMyTab('myorder');
+    }, 1500);
     document.getElementById('success-msg').style.display='block';
     setTimeout(()=>{document.getElementById('success-msg').style.display='none';},4000);
-    loadRanking(currentPos); await checkExistingOrder();
+    loadRanking(currentPos);await checkExistingOrder();
   } catch(e){const m=document.getElementById('error-msg');m.style.display='block';m.textContent='投稿に失敗しました。';}
-  btn.disabled=false; btn.textContent='🔥 このオーダーを投稿する';
+  btn.disabled=false;btn.textContent='🔥 このオーダーを投稿する';
 };
 
 loadRanking('捕手');
 </script>
+
 </body>
 </html>
-　
